@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CSP 门店服务系统 · 众信旅游</title>
+<style>
+  :root {
+    --brand: #E60012;
+    --brand-dark: #C2180B;
+    --brand-soft: #FFE8EA;
+    --brand-light: #FFF4F4;
+    --ink: #1f2233;
+    --ink-2: #4a4e63;
+    --muted: #8a8fa3;
+    --line: #eef0f4;
+    --bg: #f5f6fa;
+    --sidebar: #1c1e30;
+    --sidebar-hover: #2a2d45;
+    --sidebar-active: #2f3351;
+    --green: #16a34a;
+    --orange: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --red: #ff4d4f;
+    --shadow-sm: 0 1px 3px rgba(25,28,50,.06), 0 1px 2px rgba(25,28,50,.04);
+    --shadow-md: 0 8px 24px rgba(25,28,50,.09);
+    --shadow-lg: 0 20px 50px rgba(25,28,50,.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  /* ===== Header ===== */
+  .app { height: 100vh; display: flex; flex-direction: column; }
+  .header {
+    height: 60px; flex: 0 0 60px;
+    display: flex; align-items: center;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 0 20px;
+    position: relative; z-index: 50;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: 32px; }
+  .logo-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(135deg, #FF5A5F, var(--brand));
+    color: #fff; font-weight: 700; font-size: 17px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(230,0,18,.28);
+  }
+  .logo-text { line-height: 1.15; }
+  .logo-text b { font-size: 15px; letter-spacing: .5px; }
+  .logo-text span { display: block; font-size: 11px; color: var(--muted); }
+  .search {
+    flex: 1; max-width: 420px; position: relative;
+    display: flex; align-items: center;
+  }
+  .search svg { position: absolute; left: 14px; color: var(--muted); }
+  .search input {
+    width: 100%; height: 38px; border-radius: 20px; border: 1px solid #e6e8ef;
+    background: #f7f8fb; padding: 0 42px 0 40px; font-size: 13px; outline: none;
+    transition: .2s;
+  }
+  .search input:focus { border-color: var(--brand); background: #fff; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .hd-link {
+    display: flex; align-items: center; gap: 5px;
+    padding: 8px 11px; border-radius: 8px; color: var(--ink-2);
+    font-size: 14px; position: relative; transition: .15s;
+  }
+  .hd-link:hover { color: var(--brand); background: var(--brand-light); }
+  .hd-link .caret { transition: .2s; }
+  .hd-link.open .caret { transform: rotate(180deg); }
+  .mdot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: #ff3b5c; }
+  .hd-link .new-badge { margin-left: 2px; font-size: 10px; color: #fff; background: var(--red); padding: 1px 6px; border-radius: 8px; font-weight: 700; line-height: 1.5; }
+  .bell {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-2); position: relative; transition: .15s;
+  }
+  .bell:hover { background: #f1f2f6; }
+  .bell .badge {
+    position: absolute; top: 3px; right: 2px;
+    background: #ff3b5c; color: #fff; font-size: 10px; line-height: 1;
+    padding: 3px 4px; border-radius: 8px; font-weight: 600;
+  }
+  .user { display: flex; align-items: center; gap: 10px; padding-left: 8px; margin-left: 6px; border-left: 1px solid var(--line); }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, #FFD3A5, #FD6585);
+    color: #fff; font-weight: 600; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .user-name { font-size: 13px; font-weight: 600; }
+  .user-role { font-size: 11px; color: var(--muted); }
+
+  /* ===== Dropdown (操作指南) ===== */
+  .dropdown { position: relative; }
+  .dropdown-panel {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    min-width: 210px; background: #fff; border-radius: 12px;
+    box-shadow: var(--shadow-lg); border: 1px solid var(--line);
+    padding: 6px; z-index: 200; opacity: 0; visibility: hidden;
+    transform: translateY(-6px); transition: .18s;
+  }
+  .dropdown.open .dropdown-panel { opacity: 1; visibility: visible; transform: translateY(0); }
+  .dd-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px; color: var(--ink-2);
+    font-size: 14px; transition: .12s; width: 100%; text-align: left;
+  }
+  .dd-item svg { color: var(--muted); flex: 0 0 auto; }
+  .dd-item:hover { background: var(--brand-light); color: var(--brand); }
+  .dd-item:hover svg { color: var(--brand); }
+  .dd-divider { height: 1px; background: var(--line); margin: 6px 4px; }
+  .dd-heading { font-size: 11px; color: var(--muted); padding: 6px 12px 4px; letter-spacing: .5px; }
+  .dd-item .new-tag {
+    margin-left: auto; font-size: 10px; color: var(--brand);
+    background: var(--brand-soft); padding: 2px 6px; border-radius: 4px; font-weight: 600;
+  }
+
+  /* ===== Layout ===== */
+  .body { flex: 1; display: flex; min-height: 0; }
+  .sidebar {
+    width: 208px; flex: 0 0 208px; background: var(--sidebar);
+    padding: 16px 12px; overflow-y: auto;
+  }
+  .side-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 10px; color: #b7bcd2;
+    font-size: 14px; margin-bottom: 4px; transition: .14s; width: 100%; text-align: left;
+    position: relative;
+  }
+  .side-item svg { color: #8f94ad; flex: 0 0 auto; }
+  .side-item:hover { background: var(--sidebar-hover); color: #fff; }
+  .side-item:hover svg { color: #dfe2f0; }
+  .side-item.active {
+    background: var(--sidebar-active); color: #fff; font-weight: 500;
+    box-shadow: inset 3px 0 0 var(--brand);
+  }
+  .side-item.active svg { color: var(--brand); }
+  .side-item .arrow { margin-left: auto; opacity: .55; transition: .2s; }
+
+  .content { flex: 1; overflow-y: auto; padding: 20px; min-width: 0; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+  .main-col { display: flex; flex-direction: column; gap: 20px; }
+  .card {
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow-sm);
+    border: 1px solid #f0f1f5;
+  }
+  .card-pad { padding: 20px; }
+
+  .hero {
+    background: linear-gradient(120deg, #fff, #fff9f9);
+    border: 1px solid #fbe4e4;
+    padding: 20px 22px; border-radius: 14px;
+    display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+  }
+  .hero-emoji { font-size: 28px; }
+  .hero b { font-size: 17px; }
+  .hero .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .hero .sub em { color: var(--brand); font-style: normal; font-weight: 600; }
+
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--brand); display: inline-block; }
+
+  /* 待办订单 */
+  .todo-row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
+  .todo-sub { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; margin-top: 12px; }
+  .todo-cell {
+    text-align: center; padding: 14px 8px; border-radius: 12px;
+    background: #fbfbfd; border: 1px solid #f0f1f5; transition: .15s; cursor: pointer;
+  }
+  .todo-cell:hover { border-color: var(--brand); background: var(--brand-light); }
+  .todo-cell .num { font-size: 24px; font-weight: 700; color: var(--brand); }
+  .todo-cell .label { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .todo-cell.warn .num { color: var(--orange); }
+  .todo-cell.red .num { color: #e53935; }
+  .todo-cell.idle .num { color: #c6cad6; }
+
+  /* 快捷入口 */
+  .quick-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .quick-cell {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 16px 6px; border-radius: 12px; cursor: pointer; transition: .15s;
+  }
+  .quick-cell:hover { background: #f7f8fb; }
+  .quick-ico {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .quick-cell span { font-size: 12px; color: var(--ink-2); }
+
+  /* 核心数据 */
+  .core-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .core-cell {
+    padding: 16px; border-radius: 12px; border: 1px solid #f0f1f5;
+    background: #fbfbfd;
+  }
+  .core-cell .k { font-size: 12px; color: var(--muted); }
+  .core-cell .v { font-size: 22px; font-weight: 700; margin-top: 6px; }
+  .core-cell .s { font-size: 12px; color: #9aa0b5; margin-top: 4px; }
+  .core-cell .s b { color: var(--ink-2); font-weight: 600; }
+
+  .daterange { display: flex; align-items: center; gap: 4px; margin-bottom: 14px; }
+  .daterange .chips { display: flex; gap: 4px; margin-right: auto; }
+  .chip {
+    padding: 5px 12px; border-radius: 14px; font-size: 13px; color: var(--ink-2);
+    background: #f2f3f7; transition: .14s;
+  }
+  .chip:hover { background: #e8eaf1; }
+  .chip.active { background: var(--brand); color: #fff; }
+  .daterange .range {
+    font-size: 12px; color: var(--muted); border: 1px solid #e6e8ef;
+    padding: 6px 12px; border-radius: 14px; background: #fff;
+  }
+
+  /* 消息通知 */
+  .noti-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f4f5f8; }
+  .noti-item:last-child { border-bottom: none; }
+  .noti-ico { width: 34px; height: 34px; border-radius: 9px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+  .noti-text { flex: 1; min-width: 0; }
+  .noti-text p { font-size: 13px; line-height: 1.4; }
+  .noti-time { font-size: 11px; color: #b2b6c6; margin-top: 3px; }
+
+  /* 右侧栏 */
+  .right-col { display: flex; flex-direction: column; gap: 20px; }
+
+  .promo {
+    position: relative; border-radius: 14px; overflow: hidden; height: 150px;
+    background-size: cover; background-position: center; color: #fff;
+    padding: 18px; display: flex; flex-direction: column; justify-content: flex-end;
+    box-shadow: var(--shadow-sm);
+  }
+  .promo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.38) 100%); }
+  .promo .p-new {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    font-size: 10px; font-weight: 700; color: #fff; background: linear-gradient(135deg,#FF416C,#FF4B2B);
+    padding: 3px 9px; border-radius: 6px; transform: rotate(-3deg);
+  }
+  .promo .p-text { position: relative; z-index: 2; }
+  .promo .p-text b { font-size: 17px; display: block; text-shadow: 0 2px 8px rgba(0,0,0,.55); }
+  .promo .p-text span { font-size: 12px; opacity: .92; margin-top: 4px; display: block; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
+  .promo .p-btn {
+    position: relative; z-index: 2; margin-top: 10px; align-self: flex-start;
+    display: inline-flex; align-items: center; padding: 6px 16px; border-radius: 16px;
+    background: #fff; color: #764ba2; font-size: 12px; font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+  }
+
+  /* 钱包 */
+  .wallet { background: linear-gradient(135deg, #ff5a5f, #d5000f); color: #fff; border-radius: 14px; padding: 20px; }
+  .wallet .w-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; opacity: .95; }
+  .wallet .w-head a { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; opacity: .9; }
+  .wallet .w-total { font-size: 30px; font-weight: 800; margin: 12px 0 14px; letter-spacing: -.5px; }
+  .wallet .w-row { display: flex; justify-content: space-between; font-size: 12px; opacity: .9; padding: 5px 0; border-top: 1px solid rgba(255,255,255,.22); }
+  .wallet .w-row span:last-child { font-weight: 600; }
+
+  /* 客人查询 */
+  .guest { display: flex; gap: 8px; align-items: stretch; }
+  .guest .cc { display: flex; align-items: center; gap: 4px; padding: 0 12px; border: 1px solid #e6e8ef; border-radius: 10px; background: #fff; font-size: 13px; color: var(--ink-2); }
+  .guest input { flex: 1; min-width: 0; height: 40px; border: 1px solid #e6e8ef; border-radius: 10px; padding: 0 12px; font-size: 13px; outline: none; }
+  .guest input:focus { border-color: var(--brand); }
+  .guest .g-btn { padding: 0 16px; border-radius: 10px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 600; }
+
+  .calendar-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .calendar-head b { font-size: 14px; }
+  .calendar-head .nav { display: flex; gap: 4px; }
+  .calendar-head .nav button { width: 24px; height: 24px; border-radius: 6px; color: var(--muted); }
+  .calendar-head .nav button:hover { background: #f1f2f6; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+  .cal-grid .dow { font-size: 11px; color: var(--muted); padding: 4px 0; }
+  .cal-day {
+    font-size: 12px; height: 30px; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; color: var(--ink-2); position: relative;
+  }
+  .cal-day:hover { background: #f4f5f8; }
+  .cal-day.today { background: var(--brand); color: #fff; font-weight: 600; }
+  .cal-day.dot::after { content: ""; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--brand); }
+  .cal-day.today.dot::after { background: #fff; }
+
+  .anno-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f4f5f8; align-items: flex-start; }
+  .anno-item:last-child { border-bottom: none; }
+  .anno-item .new { flex: 0 0 auto; font-size: 10px; color: #fff; background: var(--brand); padding: 2px 6px; border-radius: 4px; font-weight: 600; margin-top: 2px; }
+  .anno-item p { font-size: 13px; line-height: 1.4; }
+  .anno-item .t { font-size: 11px; color: #b2b6c6; margin-top: 2px; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #d5d8e2; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #c2c6d4; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-mark">众</div>
+      <div class="logo-text">
+        <b>众信旅游</b>
+        <span>CSP 门店服务系统</span>
+      </div>
+    </div>
+
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="支持搜索订单/产品" />
+    </div>
+
+    <div class="header-right">
+      <a class="hd-link" href="#">U币商城</a>
+
+      <div class="dropdown" id="guideDropdown">
+        <a class="hd-link" id="guideBtn" href="#">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          操作指南
+          <svg class="caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </a>
+        <div class="dropdown-panel">
+          <div class="dd-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.5v7l6-3.5z"/></svg>
+            操作视频
+          </div>
+          <div class="dd-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 9v11"/></svg>
+            操作手册
+          </div>
+          <div class="dd-divider"></div>
+          <div class="dd-heading">集团制度</div>
+          <button class="dd-item" id="openDocsBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            集团文件中心
+            <span class="new-tag">NEW</span>
+          </button>
+        </div>
+      </div>
+
+      <a class="hd-link" href="#">公告中心</a>
+      <a class="hd-link" href="#">审批<span class="new-badge">9</span></a>
+      <a class="hd-link" href="#">消息<span class="new-badge">99</span></a>
+      <a class="hd-link" href="#">测试加盟门店<svg class="caret" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></a>
+
+      <div class="user">
+        <div class="avatar">唐</div>
+        <div>
+          <div class="user-name">唐美芳</div>
+          <div class="user-role">加盟门店销售</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+      <button class="side-item active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+        首页
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3 12 13 2 3M2 3h20v18H2z"/></svg>
+        销售管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18H6z"/><path d="M6 7h12M6 11h12M6 15h8"/></svg>
+        审批管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/></svg>
+        票据管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M8 15h4"/></svg>
+        资金管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M16 16h2"/></svg>
+        钱包管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 2.4 3.4-.5.5 3.4L21 9.7l-1.7 3 1.7 3-2.7 2.4-.5 3.4-3.4-.5L12 22l-2.4-2.4-3.4.5-.5-3.4L3 15.3l1.7-3L3 9.3l2.7-2.4.5-3.4 3.4.5z"/></svg>
+        活动管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 4.6-3.2 7.7-8 9-4.8-1.3-8-4.4-8-9V7l8-4z"/></svg>
+        优游学院
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V5a1 1 0 0 1 1-1h9l2 2v15"/><path d="M4 21h16M8 9h5"/></svg>
+        运营管理
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h4l2 2h4l2-2h4"/></svg>
+        服务市场
+      </button>
+      <button class="side-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/></svg>
+        营销工具
+      </button>
+    </aside>
+
+    <!-- ===== Main content ===== -->
+    <main class="content">
+      <div class="hero">
+        <div class="hero-emoji">👋</div>
+        <div>
+          <b>欢迎您，测试加盟门店，唐美芳销售 ~</b>
+          <div class="sub">欢迎回到 <em>众信旅游 · CSP 门店服务平台</em></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="main-col">
+          <!-- 待办订单 -->
+          <div class="card card-pad">
+            <div class="section-title"><span class="dot"></span>待办订单</div>
+            <div class="todo-row">
+              <div class="todo-cell red"><div class="num">2</div><div class="label">超期欠款</div></div>
+              <div class="todo-cell warn"><div class="num">1</div><div class="label">待收订金</div></div>
+              <div class="todo-cell warn"><div class="num">2</div><div class="label">待收尾款</div></div>
+              <div class="todo-cell"><div class="num">4</div><div class="label">待签合同</div></div>
+              <div class="todo-cell"><div class="num">2</div><div class="label">待占位</div></div>
+              <div class="todo-cell idle"><div class="num">0</div><div class="label">待出团</div></div>
+              <div class="todo-cell idle"><div class="num">0</div><div class="label">出团中</div></div>
+              <div class="todo-cell warn"><div class="num">13</div><div class="label">待审批</div></div>
+            </div>
+            <div class="todo-sub">
+              <div class="todo-cell idle"><div class="num">0</div><div class="label">待审报账</div></div>
+              <div class="todo-cell idle"><div class="num">0</div><div class="label">临近日位</div></div>
+            </div>
+          </div>
+
+          <!-- 快捷入口 -->
+          <div class="card card-pad">
+            <div class="section-title"><span class="dot"></span>快捷入口</div>
+            <div class="quick-row">
+              <div class="quick-cell"><div class="quick-ico" style="background:linear-gradient(135deg,#ff7a6b,#e60012)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 6h18M4 6l2 14h12l2-14"/><path d="M9 10v6M15 10v6"/></svg></div><span>退订管理</span></div>
+              <div class="quick-cell"><div class="quick-ico" style="background:linear-gradient(135deg,#64b5f6,#3b82f6)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 3h12v18H6z"/><path d="M6 7h12M6 11h12M6 15h8"/></svg></div><span>产品预订中心</span></div>
+              <div class="quick-cell"><div class="quick-ico" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></div><span>议价管理</span></div>
+              <div class="quick-cell"><div class="quick-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 3h12v18H6z"/><path d="M6 7h12M6 11h12M6 15h8"/></svg></div><span>订单管理</span></div>
+              <div class="quick-cell"><div class="quick-ico" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M8 15h4"/></svg></div><span>团款管理</span></div>
+              <div class="quick-cell"><div class="quick-ico" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div><span>自定义</span></div>
+            </div>
+          </div>
+
+          <!-- 核心数据 -->
+          <div class="card card-pad">
+            <div class="section-title"><span class="dot"></span>核心数据</div>
+            <div class="daterange">
+              <div class="chips">
+                <button class="chip">昨天</button>
+                <button class="chip active">今天</button>
+                <button class="chip">本周</button>
+                <button class="chip">本月</button>
+                <button class="chip">本年</button>
+              </div>
+              <div class="range">2026-09-07 ~ 2026-09-07</div>
+            </div>
+            <div class="core-row">
+              <div class="core-cell"><div class="k">订单流水</div><div class="v">¥0.00</div><div class="s">—</div></div>
+              <div class="core-cell"><div class="k">订单合同价</div><div class="v">¥0.00</div><div class="s">—</div></div>
+              <div class="core-cell"><div class="k">订单结算价</div><div class="v">¥0.00</div><div class="s">—</div></div>
+              <div class="core-cell"><div class="k">订单实收</div><div class="v">¥0.00</div><div class="s">实收占比 <b>0.00%</b></div></div>
+              <div class="core-cell"><div class="k">订单毛利</div><div class="v">¥0.00</div><div class="s">毛利率 <b>0.00%</b></div></div>
+              <div class="core-cell"><div class="k">客单价</div><div class="v">¥0.00</div><div class="s">—</div></div>
+              <div class="core-cell"><div class="k">订单数</div><div class="v">0</div><div class="s">新增订单 <b>0</b></div></div>
+              <div class="core-cell"><div class="k">出行人数</div><div class="v">0</div><div class="s">新增人数 <b>0</b></div></div>
+            </div>
+          </div>
+
+          <!-- 消息通知 -->
+          <div class="card card-pad">
+            <div class="section-title"><span class="dot"></span>消息通知</div>
+            <div class="noti-item">
+              <div class="noti-ico" style="background:#ffe9e9;color:#e60012"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18H6z"/><path d="M6 7h12M6 11h12M6 15h8"/></svg></div>
+              <div class="noti-text"><p>订单 <b>#SO20260907018</b> 已取消，供应商已退款，请留意入账。</p><div class="noti-time">23小时前</div></div>
+            </div>
+            <div class="noti-item">
+              <div class="noti-ico" style="background:#e8f4fd;color:#3b82f6"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></div>
+              <div class="noti-text"><p>订单 <b>#SO20260907012</b> 待签合同，请在 48 小时内完成签署。</p><div class="noti-time">20小时前</div></div>
+            </div>
+            <div class="noti-item">
+              <div class="noti-ico" style="background:#fef4e6;color:#f59e0b"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01"/><path d="M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+              <div class="noti-text"><p>订单 <b>#SO20260907003</b> 超期欠款，请尽快完成尾款收款。</p><div class="noti-time">1天前</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧栏 -->
+        <div class="right-col">
+          <div class="promo" style="background-image:url('assets/img/csp-banner-market-new.jpg')">
+            <span class="p-new">NEW</span>
+            <div class="p-text">
+              <b>服务市场·全新开放</b>
+              <span>让UU的每一项服务，为您的经营保驾护航</span>
+            </div>
+            <span class="p-btn" style="background:linear-gradient(135deg,#fff,#ffe0b2);color:#d97706;">立即查看</span>
+          </div>
+          <div class="promo" style="background-image:url('assets/img/csp-banner-hotel-new.jpg')">
+            <div class="p-text">
+              <b>酒店预订季</b>
+              <span>甄选全球品质酒店，一键预订省心便捷</span>
+            </div>
+            <span class="p-btn">立即预订</span>
+          </div>
+
+          <div class="wallet">
+            <div class="w-head">钱包概览 <a href="#">详情 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+            <div class="w-total">¥61,017.38</div>
+            <div class="w-row"><span>可提现金额</span><span>¥51,528.95</span></div>
+            <div class="w-row"><span>冻结金额</span><span>¥9,488.43</span></div>
+          </div>
+
+          <div class="card card-pad">
+            <div class="section-title"><span class="dot"></span>客人报名情况查询</div>
+            <div class="guest">
+              <div class="cc">+86</div>
+              <input type="text" placeholder="请输入手机号" />
+              <button class="g-btn">查询</button>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <div class="calendar-head">
+              <b>订单日历</b>
+              <div class="nav"><button>‹</button><button>›</button></div>
+            </div>
+            <div class="cal-grid">
+              <div class="dow">日</div><div class="dow">一</div><div class="dow">二</div><div class="dow">三</div><div class="dow">四</div><div class="dow">五</div><div class="dow">六</div>
+              <div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div>
+              <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day today">7</div>
+              <div class="cal-day dot">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div>
+              <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day dot">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div>
+              <div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div>
+              <div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  const dropdown = document.getElementById("guideDropdown");
+  const guideBtn = document.getElementById("guideBtn");
+  guideBtn.addEventListener("click", (e) => { e.preventDefault(); dropdown.classList.toggle("open"); });
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target)) dropdown.classList.remove("open");
+  });
+
+  document.getElementById("openDocsBtn").addEventListener("click", () => {
+    dropdown.classList.remove("open");
+    window.open("group-document-center.html?sys=csp", "_blank", "noopener");
+  });
+</script>
+</body>
+</html>
