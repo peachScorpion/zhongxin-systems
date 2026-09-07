@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>集团文件中心 · 众信旅游</title>
+<style>
+  :root {
+    --navy: #1B3A5F;
+    --navy-2: #12304f;
+    --navy-3: #0e2740;
+    --gold: #C9A84C;
+    --gold-2: #e3c86a;
+    --ink: #1E293B;
+    --ink-2: #475569;
+    --muted: #94A3B8;
+    --line: #E2E8F0;
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.05);
+    --shadow-md: 0 12px 32px rgba(15,23,42,.08);
+    --shadow-lg: 0 24px 60px rgba(15,23,42,.16);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  /* ===== Nav ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 60;
+    height: 64px; display: flex; align-items: center; gap: 12px;
+    padding: 0 40px;
+    background: rgba(255,255,255,.8);
+    backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid rgba(226,232,240,.7);
+  }
+  .nav .logo { display: flex; align-items: center; gap: 11px; }
+  .logo-mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--navy); color: #fff; font-weight: 800; font-size: 17px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-text { line-height: 1.1; }
+  .logo-text b { font-size: 15px; letter-spacing: .3px; }
+  .logo-text span { display: block; font-size: 11px; color: var(--muted); letter-spacing: .4px; }
+  .nav .spacer { flex: 1; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 10px; color: var(--ink-2);
+    font-size: 14px; transition: .15s;
+  }
+  .nav-link:hover { color: var(--navy); background: #eef2f7; }
+  .nav-link.ghost {
+    border: 1px solid var(--line); background: #fff;
+  }
+  .nav-link.ghost:hover { border-color: var(--navy); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative; overflow: hidden;
+    color: #fff;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: url("assets/img/kb-hero-bg.jpg") center/cover no-repeat;
+  }
+  .hero-veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg, rgba(11,31,51,.92) 0%, rgba(20,48,82,.82) 45%, rgba(27,58,95,.55) 100%);
+  }
+  .hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1120px; margin: 0 auto; padding: 92px 40px 84px;
+    text-align: center;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--gold-2); font-weight: 600; margin-bottom: 22px;
+  }
+  .eyebrow::before, .eyebrow::after { content: ""; width: 28px; height: 1px; background: rgba(227,200,106,.6); }
+  .hero h1 {
+    font-size: 56px; line-height: 1.08; font-weight: 800; letter-spacing: -1px;
+    margin-bottom: 18px;
+  }
+  .hero h1 .gold { color: var(--gold-2); }
+  .hero .lead {
+    max-width: 640px; margin: 0 auto; font-size: 17px; color: rgba(255,255,255,.85);
+  }
+  .hero-search {
+    position: relative; max-width: 560px; margin: 34px auto 0;
+  }
+  .hero-search svg { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .hero-search input {
+    width: 100%; height: 58px; border-radius: 30px; border: none;
+    background: #fff; padding: 0 30px 0 54px; font-size: 16px; color: var(--ink);
+    outline: none; box-shadow: var(--shadow-lg);
+  }
+  .hero-search input::placeholder { color: #a5b1c2; }
+
+  /* ===== Sections ===== */
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+  .section { padding: 72px 0 8px; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 30px; }
+  .section-head .kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+  .section-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -.5px; }
+  .section-head .more { font-size: 13px; color: var(--muted); }
+
+  /* ===== File cards (large) ===== */
+  .file-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .file-card {
+    border-radius: var(--radius); overflow: hidden; background: var(--card);
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    transition: transform .22s, box-shadow .22s; text-align: left; width: 100%;
+    display: flex; flex-direction: column;
+  }
+  .file-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+  .file-cover {
+    position: relative; height: 150px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .file-cover .deco {
+    position: absolute; width: 180px; height: 180px; border-radius: 50%;
+    background: rgba(255,255,255,.12);
+  }
+  .file-cover .deco.d2 { width: 120px; height: 120px; background: rgba(255,255,255,.18); }
+  .file-cover svg { position: relative; z-index: 2; color: #fff; }
+  .file-cover .badge {
+    position: absolute; bottom: 14px; left: 18px; z-index: 2;
+    font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 1.5px;
+    background: rgba(0,0,0,.18); padding: 4px 10px; border-radius: 20px;
+  }
+  .file-body { padding: 20px 22px 22px; }
+  .file-tags { display: flex; gap: 7px; margin-bottom: 9px; flex-wrap: wrap; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+  .file-title { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+  .file-desc { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+  .file-meta {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-size: 12px; color: #94a3b8; display: flex; flex-wrap: wrap; gap: 12px;
+  }
+  .file-meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .file-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .file-actions .btn { flex: 1; justify-content: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    transition: .15s;
+  }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--navy-2); }
+  .btn-ghost { background: #f1f5f9; color: var(--ink-2); }
+  .btn-ghost:hover { background: #e2e8f0; }
+
+  .empty {
+    text-align: center; padding: 70px 20px; color: var(--muted);
+    border: 1px dashed var(--line); border-radius: var(--radius); background: #fff;
+  }
+  .empty svg { margin: 0 auto 12px; color: #cbd5e1; display: block; }
+
+  /* ===== Footer ===== */
+  .footer {
+    margin-top: 80px; border-top: 1px solid var(--line);
+    padding: 36px 40px; text-align: center; color: var(--muted); font-size: 13px;
+  }
+  .footer .f-logo { color: var(--navy); font-weight: 700; margin-bottom: 4px; }
+
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: #b6c2d1; }
+
+  @media (max-width: 960px) {
+    .file-grid { grid-template-columns: repeat(3, 1fr); }
+    .hero h1 { font-size: 42px; }
+  }
+  @media (max-width: 620px) {
+    .file-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav, .wrap { padding-left: 20px; padding-right: 20px; }
+    .hero-inner { padding: 60px 20px 56px; }
+    .hero h1 { font-size: 34px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== Nav ===== -->
+  <header class="nav">
+    <div class="logo">
+      <div class="logo-mark">众</div>
+      <div class="logo-text">
+        <b>众信旅游</b>
+        <span>GROUP DOCUMENT CENTER</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <a class="nav-link ghost" id="navBack" href="ubk-supplier-system.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      <span id="navBackText">返回 UBK 系统</span>
+    </a>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-veil"></div>
+    <div class="hero-inner">
+      <div class="eyebrow"><span id="heroSysName">UBK 供应商系统</span> · Knowledge Base</div>
+      <h1><span id="heroTitle">集团文件中心</span><span class="gold">.</span></h1>
+      <p class="lead" id="heroLead">面向供应商合作伙伴开放的集团级制度、规范与协议，一处查阅、随时下载，让合作有据可依。</p>
+      <div class="hero-search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="heroSearch" placeholder="搜索文件名称或部门…" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 文件 ===== -->
+  <section class="wrap section" id="files">
+    <div class="files-main">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Library</div>
+            <h2>全部文件 <span id="fileCount" style="font-size:16px;font-weight:500;color:var(--muted)"></span></h2>
+          </div>
+        </div>
+        <div class="file-grid" id="fileGrid"></div>
+        <div class="empty" id="empty" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          未找到匹配的文件，试试其他关键词
+        </div>
+      </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="f-logo">众信旅游集团 · 集团文件中心</div>
+    <div id="footerNote">本页文件仅供合作方查阅，版权归众信旅游集团所有 · © 2024</div>
+  </footer>
+
+<script>
+  // ===== 数据 =====
+  const CATEGORY_META = {
+    "制度规范": { grad: "linear-gradient(135deg,#ff8a65,#e91e63)", tagBg: "#fde8ef", tagColor: "#c2185b", desc: "准入、履约与日常合作的基础制度", icon: "scale" },
+    "结算财务": { grad: "linear-gradient(135deg,#60a5fa,#2563eb)", tagBg: "#e8f0fe", tagColor: "#1d4ed8", desc: "结算周期、对账规则与开票要求", icon: "coin" },
+    "服务质量": { grad: "linear-gradient(135deg,#34d399,#16a34a)", tagBg: "#e7f6ec", tagColor: "#15803d", desc: "量化服务质量评价与考核体系", icon: "shield" },
+    "信息安全": { grad: "linear-gradient(135deg,#475569,#1B3A5F)", tagBg: "#eef1f6", tagColor: "#1B3A5F", desc: "数据保密范围与安全管控义务", icon: "lock" },
+    "售后规则": { grad: "linear-gradient(135deg,#fbbf24,#f59e0b)", tagBg: "#fdf1e2", tagColor: "#b45309", desc: "统一退改政策与售后响应标准", icon: "headset" },
+    "品牌规范": { grad: "linear-gradient(135deg,#e3c86a,#c9a84c)", tagBg: "#fbf5e4", tagColor: "#8a6d1f", desc: "品牌标识与物料使用授权规范", icon: "badge" },
+  };
+
+  const SYS = {
+    ubk: { name: "UBK 供应商系统", home: "ubk-supplier-system.html", heroTitle: "集团文件中心", heroLead: "面向供应商合作伙伴开放的集团级制度、规范与协议，一处查阅、随时下载，让合作有据可依。", audience: "合作方" },
+    csp: { name: "CSP 门店服务系统", home: "csp-system.html", heroTitle: "集团文件中心", heroLead: "面向门店服务合作伙伴开放的集团级制度、规范与协议，一处查阅、随时下载，让经营有规可循。", audience: "合作方" },
+    uom: { name: "UOM 运营管理系统", home: "uom-system.html", heroTitle: "集团文件中心", heroLead: "面向集团内部员工开放的集团级制度、规范与协议，一处查阅、随时下载，让工作有据可依。", audience: "集团内部员工" },
+  };
+
+  const SYS_PREFIX = { ubk: "供应商", csp: "门店", uom: "内部" };
+  const CAT_FILE = { "制度规范": 0, "结算财务": 1, "服务质量": 2, "信息安全": 3, "售后规则": 4, "品牌规范": 5 };
+
+  // [名称后缀, 分类, 部门, 描述]
+  const DOC_TEMPLATES = [
+    ["合作管理制度", "制度规范", "集团运营管理部", "规范合作方准入、日常合作与履约管理的基础制度。"],
+    ["准入审核规范", "制度规范", "集团运营管理部", "明确合作方准入资质与审核流程。"],
+    ["资质与证照管理办法", "制度规范", "集团运营管理部", "规定合作方资质证照的提交、核验与更新要求。"],
+    ["合同签订与变更管理规范", "制度规范", "集团法务部", "规范合同起草、签订、变更与归档流程。"],
+    ["日常合作行为准则", "制度规范", "集团运营管理部", "明确合作过程中的基本行为规范与红线。"],
+    ["结算与对账管理办法", "结算财务", "集团财务部", "明确结算周期、对账规则与开票要求。"],
+    ["发票与开票管理规范", "结算财务", "集团财务部", "规范发票开具、传递与核销流程。"],
+    ["返佣结算规则", "结算财务", "集团财务部", "说明返佣计算口径、结算周期与发放方式。"],
+    ["费用报销与账期说明", "结算财务", "集团财务部", "明确费用报销范围、账期与所需票据。"],
+    ["财务对账争议处理办法", "结算财务", "集团财务部", "规定对账差异与争议的处理流程及时效。"],
+    ["服务质量考核规范", "服务质量", "集团品质管理部", "建立量化服务质量评价与考核体系。"],
+    ["服务标准与作业手册", "服务质量", "集团品质管理部", "统一服务流程、话术与作业标准。"],
+    ["投诉与意见处理规范", "服务质量", "集团客户服务部", "规范投诉受理、响应与闭环处理流程。"],
+    ["满意度评价管理办法", "服务质量", "集团客户服务部", "明确满意度调研与结果应用机制。"],
+    ["服务质量红线与处罚细则", "服务质量", "集团品质管理部", "界定服务红线行为及对应处罚标准。"],
+    ["数据安全与保密协议", "信息安全", "集团信息安全部", "界定数据保密范围与安全管控义务。"],
+    ["个人信息保护规范", "信息安全", "集团信息安全部", "规范个人信息的收集、使用与保护要求。"],
+    ["账号与权限管理规范", "信息安全", "集团信息安全部", "明确系统账号开通、权限分配与回收规则。"],
+    ["数据留存与销毁规程", "信息安全", "集团信息安全部", "规定业务数据的留存期限与销毁方式。"],
+    ["信息安全事件应急预案", "信息安全", "集团信息安全部", "明确安全事件的报告、处置与复盘流程。"],
+    ["退改与售后处理规则", "售后规则", "集团客户服务部", "统一退改政策与售后响应标准。"],
+    ["退款时效与流程说明", "售后规则", "集团客户服务部", "说明退款申请条件、时效与到账流程。"],
+    ["售后客服响应规范", "售后规则", "集团客户服务部", "规范售后客服的响应时长与处理标准。"],
+    ["重大投诉升级处理机制", "售后规则", "集团客户服务部", "建立重大投诉的分级与升级处理机制。"],
+    ["售后服务质量追踪办法", "售后规则", "集团客户服务部", "明确售后问题的跟踪、回访与闭环管理。"],
+    ["品牌与物料使用规范", "品牌规范", "集团品牌市场部", "规范品牌标识与物料使用授权。"],
+    ["广告宣传合规指引", "品牌规范", "集团品牌市场部", "明确广告宣传的内容边界与合规要求。"],
+    ["视觉形象应用标准", "品牌规范", "集团品牌市场部", "统一品牌视觉元素的应用规范。"],
+    ["对外发声与公关规范", "品牌规范", "集团品牌市场部", "规范对外发声、媒体互动与舆情应对。"],
+    ["知识产权保护声明", "品牌规范", "集团法务部", "明确知识产权归属与使用限制。"],
+  ];
+
+  const REAL_FILES = {
+    ubk: [
+      "group-documents/ubk/供应商合作管理制度.pdf", "group-documents/ubk/供应商结算与对账管理办法.pdf", "group-documents/ubk/供应商服务质量考核规范.pdf",
+      "group-documents/ubk/产品数据安全与保密协议.pdf", "group-documents/ubk/退改与售后处理规则.pdf", "group-documents/ubk/集团品牌与物料使用规范.pdf",
+    ],
+    csp: [
+      "group-documents/csp/门店合作与服务管理制度.pdf", "group-documents/csp/门店结算与返佣管理办法.pdf", "group-documents/csp/门店服务质量考核规范.pdf",
+      "group-documents/csp/门店数据安全与保密协议.pdf", "group-documents/csp/门店退改与售后处理规则.pdf", "group-documents/csp/门店品牌与物料使用规范.pdf",
+    ],
+    uom: [
+      "group-documents/uom/内部合作管理制度.pdf", "group-documents/uom/内部结算与对账管理办法.pdf", "group-documents/uom/内部服务质量考核规范.pdf",
+      "group-documents/uom/内部数据安全与保密协议.pdf", "group-documents/uom/内部退改与售后处理规则.pdf", "group-documents/uom/内部品牌与物料使用规范.pdf",
+    ],
+  };
+
+  const DOCS_BY_SYS = {};
+  Object.keys(SYS).forEach((key) => {
+    const p = SYS_PREFIX[key];
+    const rfs = REAL_FILES[key];
+    DOCS_BY_SYS[key] = DOC_TEMPLATES.map((t, i) => {
+      const d = new Date(2024, 5, 1);
+      d.setDate(d.getDate() + i * 6);
+      return {
+        name: p + t[0] + ".pdf",
+        category: t[1],
+        dept: t[2],
+        desc: t[3],
+        size: (18 + ((i * 2.3) % 36)).toFixed(1) + " KB",
+        date: d.toISOString().slice(0, 10),
+        file: rfs[CAT_FILE[t[1]]],
+      };
+    });
+    // 打乱不同颜色卡片（文件类型）的排列顺序，避免同色分组
+    const arr = DOCS_BY_SYS[key];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  });
+
+  const ICONS = {
+    scale: '<path d="M12 3v18M8 21h8M5 7h14M5 7l-2 6a3 3 0 0 0 6 0L7 7M19 7l-2 6a3 3 0 0 0 6 0l-2-6"/>',
+    coin: '<circle cx="12" cy="12" r="9"/><path d="M15 8.5c-.5-1-1.7-1.5-3-1.5-2 0-3.5 1-3.5 2.6 0 3.8 7 1.9 7 5.4 0 1.6-1.5 2.6-3.5 2.6-1.3 0-2.5-.5-3-1.5M12 5.5v13"/>',
+    shield: '<path d="M12 3l8 3v6c0 4.5-3.2 7.6-8 9-4.8-1.4-8-4.5-8-9V6l8-3z"/><path d="M12 9v4m0 2.5h.01"/>',
+    lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/>',
+    headset: '<path d="M4 13a8 8 0 0 1 16 0"/><path d="M4 13v4a2 2 0 0 0 2 2h1v-6H6a2 2 0 0 0-2 2z"/><path d="M20 13v4a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2z"/><path d="M18 19a3 3 0 0 1-3 3h-2"/>',
+    badge: '<path d="M12 2l2.4 2.4 3.4-.5.5 3.4L21 9.7l-1.7 3 1.7 3-2.7 2.4-.5 3.4-3.4-.5L12 23l-2.4-2.4-3.4.5-.5-3.4L3 15.3l1.7-3L3 9.3l2.7-2.4.5-3.4 3.4.5z"/><path d="M9 12l2 2 4-4"/>',
+    pdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/>',
+    eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+    download: '<path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 21h16"/>',
+    arrow: '<path d="m6 9 6 6 6-6"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>',
+    doc: '<path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/>',
+    building: '<path d="M3 21h18M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M9 8h2M9 12h2M9 16h2"/>',
+  };
+
+  let keyword = "";
+
+  const _q = new URLSearchParams(location.search).get("sys");
+  const sys = SYS[_q] ? _q : "ubk";
+  const currentDocs = DOCS_BY_SYS[sys];
+  const currentSysMeta = SYS[sys];
+
+  const fileGrid = document.getElementById("fileGrid");
+  const empty = document.getElementById("empty");
+  const fileCount = document.getElementById("fileCount");
+
+  // ===== 文件卡片渲染 =====
+  function renderFiles() {
+    const filtered = currentDocs.filter(d =>
+      d.name.toLowerCase().includes(keyword) ||
+      d.dept.toLowerCase().includes(keyword)
+    );
+    fileCount.textContent = `· ${filtered.length} 份`;
+    empty.style.display = filtered.length ? "none" : "block";
+    fileGrid.innerHTML = filtered.map((d) => {
+      const m = CATEGORY_META[d.category];
+      return `
+      <article class="file-card">
+        <div class="file-cover" style="background:${m.grad}">
+          <span class="deco" style="top:-40px;right:-40px"></span>
+          <span class="deco d2" style="bottom:-30px;left:-30px"></span>
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${ICONS.pdf}</svg>
+          <span class="badge">PDF</span>
+        </div>
+        <div class="file-body">
+          <div class="file-title">${d.name.replace(".pdf","")}</div>
+          <div class="file-meta">
+            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.calendar}</svg>${d.date}</span>
+            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.doc}</svg>${d.size}</span>
+          </div>
+          <div class="file-actions">
+            <a class="btn btn-primary" href="${d.file}" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.eye}</svg>
+              预览
+            </a>
+            <a class="btn btn-ghost" href="${d.file}" download="${d.name}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.download}</svg>
+              下载
+            </a>
+          </div>
+        </div>
+      </article>`;
+    }).join("");
+  }
+
+  // ===== 搜索 =====
+  document.getElementById("heroSearch").addEventListener("input", (e) => {
+    keyword = e.target.value.trim().toLowerCase();
+    renderFiles();
+    document.getElementById("files").scrollIntoView({ behavior: "smooth" });
+  });
+
+  // ===== 顶部文案与返回 =====
+  function renderHero() {
+    document.getElementById("heroSysName").textContent = currentSysMeta.name;
+    document.getElementById("heroTitle").textContent = currentSysMeta.heroTitle;
+    document.getElementById("heroLead").textContent = currentSysMeta.heroLead;
+    const backText = `返回 ${currentSysMeta.name}`;
+    document.getElementById("navBack").href = currentSysMeta.home;
+    document.getElementById("navBackText").textContent = backText;
+    document.getElementById("footerNote").textContent = `本页文件仅供${currentSysMeta.audience}查阅，版权归众信旅游集团所有 · © 2024`;
+  }
+
+  // init
+  renderHero();
+  renderFiles();
+</script>
+</body>
+</html>
