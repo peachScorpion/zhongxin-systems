@@ -116,6 +116,22 @@
   .section-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -.5px; }
   .section-head .more { font-size: 13px; color: var(--muted); }
 
+  /* ===== 分类 Tab ===== */
+  .filter-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: -8px 0 26px; }
+  .ftab {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 22px; font-size: 13px; font-weight: 600;
+    color: var(--ink-2); background: #fff; border: 1px solid var(--line);
+    transition: .15s; cursor: pointer;
+  }
+  .ftab:hover { border-color: var(--navy); color: var(--navy); }
+  .ftab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .ftab .cnt {
+    font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 12px;
+    background: #eef2f7; color: var(--ink-2);
+  }
+  .ftab.active .cnt { background: rgba(255,255,255,.22); color: #fff; }
+
   /* ===== File cards (large) ===== */
   .file-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
   .file-card {
@@ -233,6 +249,7 @@
             <h2>全部文件 <span id="fileCount" style="font-size:16px;font-weight:500;color:var(--muted)"></span></h2>
           </div>
         </div>
+        <div class="filter-tabs" id="filterTabs" style="display:none"></div>
         <div class="file-grid" id="fileGrid"></div>
         <div class="empty" id="empty" style="display:none">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
@@ -261,11 +278,32 @@
   const SYS = {
     ubk: { name: "UBK 供应商系统", home: "ubk-supplier-system.html", heroTitle: "集团文件中心", heroLead: "面向供应商合作伙伴开放的集团级制度、规范与协议，一处查阅、随时下载，让合作有据可依。", audience: "合作方" },
     csp: { name: "CSP 门店服务系统", home: "csp-system.html", heroTitle: "集团文件中心", heroLead: "面向门店服务合作伙伴开放的集团级制度、规范与协议，一处查阅、随时下载，让经营有规可循。", audience: "合作方" },
-    uom: { name: "UOM 运营管理系统", home: "uom-system.html", heroTitle: "集团文件中心", heroLead: "面向集团内部员工开放的集团级制度、规范与协议，一处查阅、随时下载，让工作有据可依。", audience: "集团内部员工" },
+    uom: { name: "UOM 运营管理系统", home: "uom-system.html", heroTitle: "UOM标准文件", heroLead: "面向集团内部员工开放的集团级制度、规范与协议，一处查阅、随时下载，让工作有据可依。", audience: "集团内部员工" },
   };
 
   const SYS_PREFIX = { ubk: "供应商", csp: "门店", uom: "内部" };
   const CAT_FILE = { "制度规范": 0, "结算财务": 1, "服务质量": 2, "信息安全": 3, "售后规则": 4, "品牌规范": 5 };
+
+  // ===== 3 大类归并（UOM 用）=====
+  const MAJOR_NAMES = ["制度与规范", "财务结算", "服务与安全"];
+  const MAJOR_META = {
+    "制度与规范": { bg: "#fde8ef", color: "#c2185b" },
+    "财务结算":   { bg: "#e8f0fe", color: "#1d4ed8" },
+    "服务与安全": { bg: "#e7f6ec", color: "#15803d" },
+  };
+  const MAJOR_OF = {
+    "制度规范": "制度与规范", "品牌规范": "制度与规范",
+    "结算财务": "财务结算",
+    "服务质量": "服务与安全", "信息安全": "服务与安全", "售后规则": "服务与安全",
+  };
+  const CODE_L = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  function docCode(i) {
+    const a = CODE_L[i % CODE_L.length];
+    const n = String(100 + ((i * 37 + 11) % 800)).padStart(3, "0");
+    const b = CODE_L[(i * 7 + 3) % CODE_L.length];
+    const c = CODE_L[(i * 5 + 9) % CODE_L.length];
+    return `Q/UTOUR ${a}${n}${b}${c} 2026`;
+  }
 
   // [名称后缀, 分类, 部门, 描述]
   const DOC_TEMPLATES = [
@@ -326,8 +364,10 @@
       return {
         name: p + t[0] + ".pdf",
         category: t[1],
+        major: MAJOR_OF[t[1]],
         dept: t[2],
         desc: t[3],
+        code: docCode(i),
         size: (18 + ((i * 2.3) % 36)).toFixed(1) + " KB",
         date: d.toISOString().slice(0, 10),
         file: rfs[CAT_FILE[t[1]]],
@@ -358,6 +398,7 @@
   };
 
   let keyword = "";
+  let activeTab = "全部";
 
   const _q = new URLSearchParams(location.search).get("sys");
   const sys = SYS[_q] ? _q : "ubk";
@@ -367,17 +408,42 @@
   const fileGrid = document.getElementById("fileGrid");
   const empty = document.getElementById("empty");
   const fileCount = document.getElementById("fileCount");
+  const filterTabs = document.getElementById("filterTabs");
+
+  // ===== 分类 Tab（仅 UOM）=====
+  function buildTabs() {
+    if (sys !== "uom") return;
+    const tabs = ["全部", ...MAJOR_NAMES];
+    filterTabs.innerHTML = tabs.map((t) => {
+      const cnt = t === "全部" ? currentDocs.length : currentDocs.filter(d => d.major === t).length;
+      const on = t === activeTab ? " active" : "";
+      return `<button class="ftab${on}" data-tab="${t}">${t}<span class="cnt">${cnt}</span></button>`;
+    }).join("");
+    filterTabs.style.display = "flex";
+    filterTabs.querySelectorAll(".ftab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeTab = btn.dataset.tab;
+        buildTabs();
+        renderFiles();
+      });
+    });
+  }
 
   // ===== 文件卡片渲染 =====
   function renderFiles() {
-    const filtered = currentDocs.filter(d =>
-      d.name.toLowerCase().includes(keyword) ||
-      d.dept.toLowerCase().includes(keyword)
-    );
+    const filtered = currentDocs.filter(d => {
+      const kwOk = !keyword || d.name.toLowerCase().includes(keyword) || d.dept.toLowerCase().includes(keyword);
+      const tabOk = activeTab === "全部" || d.major === activeTab;
+      return kwOk && tabOk;
+    });
     fileCount.textContent = `· ${filtered.length} 份`;
     empty.style.display = filtered.length ? "none" : "block";
+    const isUom = sys === "uom";
     fileGrid.innerHTML = filtered.map((d) => {
       const m = CATEGORY_META[d.category];
+      const tag = isUom
+        ? `<div class="file-tags"><span class="tag" style="background:${MAJOR_META[d.major].bg};color:${MAJOR_META[d.major].color}">${d.major}</span></div>`
+        : "";
       return `
       <article class="file-card">
         <div class="file-cover" style="background:${m.grad}">
@@ -387,13 +453,14 @@
           <span class="badge">PDF</span>
         </div>
         <div class="file-body">
-          <div class="file-title">${d.name.replace(".pdf","")}</div>
+          ${tag}
+          <div class="file-title">${isUom ? `${d.code} ${d.name.replace(".pdf","")}` : d.name.replace(".pdf","")}</div>
           <div class="file-meta">
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.calendar}</svg>${d.date}</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.doc}</svg>${d.size}</span>
           </div>
           <div class="file-actions">
-            <a class="btn btn-primary" href="${d.file}" target="_blank" rel="noopener">
+            <a class="btn btn-primary" href="file-preview.html?sys=${sys}&name=${encodeURIComponent(d.name)}&code=${encodeURIComponent(d.code)}&major=${encodeURIComponent(d.major)}&file=${encodeURIComponent(d.file)}&date=${d.date}&size=${encodeURIComponent(d.size)}&dept=${encodeURIComponent(d.dept)}&desc=${encodeURIComponent(d.desc)}" target="_blank" rel="noopener">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ICONS.eye}</svg>
               预览
             </a>
@@ -418,6 +485,7 @@
   function renderHero() {
     document.getElementById("heroSysName").textContent = currentSysMeta.name;
     document.getElementById("heroTitle").textContent = currentSysMeta.heroTitle;
+    document.title = `${currentSysMeta.heroTitle} · 众信旅游`;
     document.getElementById("heroLead").textContent = currentSysMeta.heroLead;
     const backText = `返回 ${currentSysMeta.name}`;
     document.getElementById("navBack").href = currentSysMeta.home;
@@ -427,6 +495,7 @@
 
   // init
   renderHero();
+  buildTabs();
   renderFiles();
 </script>
 </body>
