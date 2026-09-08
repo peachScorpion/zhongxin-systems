@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>文件在线预览</title>
+<style>
+  :root {
+    --navy: #1B3A5F;
+    --navy-2: #12304f;
+    --ink: #1E293B;
+    --ink-2: #475569;
+    --muted: #94A3B8;
+    --line: #E2E8F0;
+    --bg: #F8FAFC;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    color: var(--ink); background: var(--bg); font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .nav {
+    position: sticky; top: 0; z-index: 60; height: 60px;
+    display: flex; align-items: center; gap: 14px; padding: 0 24px;
+    background: #fff; border-bottom: 1px solid var(--line);
+  }
+  .back {
+    display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px;
+    border-radius: 10px; color: var(--ink-2); font-size: 14px; transition: .15s;
+  }
+  .back:hover { color: var(--navy); background: #eef2f7; }
+  .sys-name { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 28px 24px 48px; }
+  .head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+  .head-info { flex: 1; min-width: 0; }
+  .head h1 { font-size: 24px; font-weight: 800; line-height: 1.3; letter-spacing: -.3px; }
+  .head .sub { margin-top: 8px; color: var(--ink-2); font-size: 14px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .head .sub span { display: inline-flex; align-items: center; gap: 5px; }
+  .code { font-size: 12px; color: var(--muted); letter-spacing: .2px; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+  .desc { color: var(--ink-2); font-size: 14px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; }
+
+  .viewer {
+    position: relative; background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; overflow: hidden; box-shadow: 0 12px 32px rgba(15,23,42,.06);
+  }
+  .viewer-bar {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    border-bottom: 1px solid var(--line); background: #fff;
+  }
+  .viewer-bar b { font-size: 13px; }
+  .viewer-bar .spacer { flex: 1; }
+  iframe { width: 100%; height: 72vh; border: none; display: block; background: #525659; }
+
+  .actions { margin-top: 18px; display: flex; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px;
+    border-radius: 11px; font-size: 14px; font-weight: 600; transition: .15s;
+  }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--navy-2); }
+  .btn-ghost { border: 1px solid var(--line); background: #fff; color: var(--ink-2); }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+
+  .fallback { display: none; padding: 40px 20px; text-align: center; color: var(--ink-2); }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="back" id="backBtn" href="#">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0 6-6m-6 6 6 6"/></svg>
+      返回文件中心
+    </a>
+    <span class="sys-name" id="sysName"></span>
+  </nav>
+
+  <div class="wrap">
+    <div class="head">
+      <div class="head-info">
+        <h1 id="fileName">文件预览</h1>
+        <div class="sub">
+          <span class="code" id="fileCode"></span>
+          <span id="fileDept"></span>
+          <span id="fileDate"></span>
+          <span id="fileSize"></span>
+        </div>
+      </div>
+      <span class="tag" id="fileMajor" style="display:none"></span>
+    </div>
+
+    <div class="desc" id="fileDesc"></div>
+
+    <div class="viewer">
+      <div class="viewer-bar">
+        <b>在线预览</b>
+        <span style="font-size:12px;color:var(--muted)">PDF</span>
+        <span class="spacer"></span>
+        <a class="btn btn-ghost" id="openRaw" href="#" target="_blank" rel="noopener" style="padding:7px 14px;font-size:13px">在新窗口打开</a>
+      </div>
+      <iframe id="pdfFrame" title="文件预览" src=""></iframe>
+      <div class="fallback" id="fallback">
+        <p style="font-size:15px">当前浏览器可能不支持内嵌 PDF 预览。</p>
+        <p style="margin-top:6px;color:var(--muted)">请点击右上角「在新窗口打开」查看原件。</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" id="downloadBtn" href="#" download>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 21h16"/></svg>
+        下载文件
+      </a>
+    </div>
+  </div>
+
+<script>
+  const SYS_NAME = { ubk: "UBK 供应商系统", csp: "CSP 门店服务系统", uom: "UOM 运营管理系统" };
+  const MAJOR_META = {
+    "制度与规范": { bg: "#fde8ef", color: "#c2185b" },
+    "财务结算":   { bg: "#e8f0fe", color: "#1d4ed8" },
+    "服务与安全": { bg: "#e7f6ec", color: "#15803d" },
+  };
+
+  const q = new URLSearchParams(location.search);
+  const sys = SYS_NAME[q.get("sys")] ? q.get("sys") : "ubk";
+  const file = q.get("file") || "";
+  const name = q.get("name") || "文件预览";
+  const code = q.get("code") || "";
+  const major = q.get("major") || "";
+  const date = q.get("date") || "";
+  const size = q.get("size") || "";
+  const dept = q.get("dept") || "";
+  const desc = q.get("desc") || "";
+
+  document.title = name + " · 在线预览";
+
+  document.getElementById("backBtn").href = "group-document-center.html?sys=" + sys;
+  document.getElementById("sysName").textContent = SYS_NAME[sys];
+
+  document.getElementById("fileName").textContent = name.replace(".pdf", "");
+  document.getElementById("fileDept").textContent = dept;
+  document.getElementById("fileDate").textContent = date;
+  document.getElementById("fileSize").textContent = size;
+  document.getElementById("fileDesc").textContent = desc;
+
+  if (sys === "uom" && code) {
+    document.getElementById("fileCode").textContent = code;
+  }
+  if (sys === "uom" && major && MAJOR_META[major]) {
+    const m = MAJOR_META[major];
+    const el = document.getElementById("fileMajor");
+    el.style.display = "inline-block";
+    el.style.background = m.bg;
+    el.style.color = m.color;
+    el.textContent = major;
+  }
+
+  if (file) {
+    document.getElementById("pdfFrame").src = file;
+    document.getElementById("openRaw").href = file;
+    document.getElementById("downloadBtn").href = file;
+    document.getElementById("downloadBtn").setAttribute("download", name);
+  } else {
+    document.getElementById("fallback").style.display = "block";
+    document.getElementById("downloadBtn").style.display = "none";
+  }
+</script>
+</body>
+</html>
