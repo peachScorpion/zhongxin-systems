@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>标准文件 · 产品需求文档（PRD）</title>
+<style>
+  :root {
+    --navy: #1B3A5F;
+    --brand: #E91E63;
+    --brand-soft: #FCE4EC;
+    --ink: #1E293B;
+    --ink-2: #475569;
+    --muted: #94A3B8;
+    --line: #E2E8F0;
+    --bg: #F6F8FB;
+    --card: #FFFFFF;
+    --green: #16a34a;
+    --orange: #f59e0b;
+    --purple: #7c3aed;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    color: var(--ink); background: var(--bg); font-size: 15px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .cover {
+    background: linear-gradient(135deg, #12304f 0%, #1B3A5F 55%, #7c2d52 100%);
+    color: #fff; border-radius: 18px; padding: 40px 40px 34px; margin-bottom: 28px;
+    position: relative; overflow: hidden;
+  }
+  .cover::after {
+    content: ""; position: absolute; right: -80px; top: -80px; width: 260px; height: 260px;
+    border-radius: 50%; background: rgba(233,30,99,.28); filter: blur(10px);
+  }
+  .cover .tag { font-size: 12px; letter-spacing: 3px; color: #e3c86a; font-weight: 700; text-transform: uppercase; }
+  .cover h1 { font-size: 30px; font-weight: 800; letter-spacing: -.5px; margin: 12px 0 8px; position: relative; z-index: 1; }
+  .cover .sub { color: rgba(255,255,255,.85); font-size: 14px; position: relative; z-index: 1; }
+  .cover .meta { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 22px; font-size: 13px; color: rgba(255,255,255,.8); position: relative; z-index: 1; }
+  .cover .meta b { color: #fff; font-weight: 600; margin-right: 4px; }
+
+  section { margin-top: 40px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--line);
+  }
+  .section-header .num {
+    width: 30px; height: 30px; border-radius: 8px; flex: 0 0 auto;
+    background: var(--navy); color: #fff; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .section-header h2 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+  .section-header .en { margin-left: auto; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  h3 { font-size: 16px; font-weight: 700; margin: 26px 0 10px; color: var(--navy); }
+  h3::before { content: ""; display: inline-block; width: 4px; height: 15px; background: var(--brand); border-radius: 2px; margin-right: 8px; vertical-align: -2px; }
+  h4 { font-size: 14px; font-weight: 700; margin: 20px 0 8px; }
+
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  strong { color: var(--ink); }
+  ul, ol { margin: 8px 0 14px 22px; color: var(--ink-2); }
+  li { margin-bottom: 5px; }
+  li b { color: var(--ink); }
+  code { background: #eef1f6; padding: 1px 6px; border-radius: 5px; font-size: 13px; color: #334155; }
+  a { color: var(--brand); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .stat { background: linear-gradient(160deg, #fff, #fbfbfd); border: 1px solid #eef0f4; border-radius: 12px; padding: 16px; }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  .stat .v { font-size: 24px; font-weight: 800; margin-top: 6px; color: var(--navy); }
+  .stat .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+  .badge.pink { background: var(--brand-soft); color: var(--brand); }
+  .badge.navy { background: #e8f0fe; color: #1d4ed8; }
+  .badge.green { background: #e7f6ec; color: #15803d; }
+  .badge.orange { background: #fff4e6; color: #b45309; }
+  .badge.purple { background: #f3e8ff; color: #7c3aed; }
+  .badge.ubk { background: #ffe9e9; color: #c0392b; }
+  .badge.csp { background: #fff4e6; color: #b45309; }
+  .badge.uom { background: #f3e8ff; color: #7c3aed; }
+
+  .table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--line); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 640px; }
+  thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; white-space: nowrap; }
+  tbody td { padding: 10px 14px; border-top: 1px solid #eef0f4; color: var(--ink-2); vertical-align: top; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody td b { color: var(--ink); }
+  td.center { text-align: center; white-space: nowrap; }
+
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0; }
+  .flow .step { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 600; color: var(--navy); }
+  .flow .step .n { display: inline-block; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%; background: var(--brand); color: #fff; font-size: 11px; margin-right: 6px; }
+  .flow .arrow { color: var(--muted); font-weight: 700; }
+
+  .callout { border-left: 4px solid var(--orange); background: #fff8ec; padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 13.5px; color: #7c5b12; }
+  .callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e40af; }
+  .callout.red { border-color: #ef4444; background: #fef2f2; color: #b91c1c; }
+  .callout.gray { border-color: #cbd5e1; background: #f8fafc; color: var(--ink-2); }
+  .callout.green { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+
+  .toc { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px; }
+  .toc h3 { margin-top: 0; }
+  .toc ol { margin-left: 20px; color: var(--ink-2); }
+  .toc a { color: var(--ink-2); text-decoration: none; }
+  .toc a:hover { color: var(--brand); }
+
+  @media (max-width: 720px) {
+    .card-grid { grid-template-columns: 1fr 1fr; }
+    .cover h1 { font-size: 24px; }
+    .page { padding: 20px 14px 60px; }
+  }
+  @media print {
+    .cover { -webkit-print-color-adjust: exact; }
+    section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <div class="tag">Product Requirements Document</div>
+    <h1>众信旅游「标准文件」功能</h1>
+    <div class="sub">产品需求文档（PRD）—— 覆盖 UBK / CSP / UOM 三个内部系统</div>
+    <div class="meta">
+      <span><b>文档版本</b>V1.1</span>
+      <span><b>文档状态</b>草稿 · 待评审</span>
+      <span><b>密级</b>内部</span>
+      <span><b>更新日期</b>2026-09-09</span>
+    </div>
+  </div>
+
+  <div class="toc">
+    <h3>目录</h3>
+    <ol>
+      <li><a href="#s1">文档信息与修订记录</a></li>
+      <li><a href="#s2">项目背景与产品定位</a></li>
+      <li><a href="#s3">需求范围</a></li>
+      <li><a href="#s4">业务流程</a></li>
+      <li><a href="#s5">功能需求</a></li>
+      <li><a href="#s6">非功能需求</a></li>
+      <li><a href="#s7">数据需求</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 文档信息 -->
+  <section id="s1">
+    <div class="section-header"><div class="num">1</div><h2>文档信息与修订记录</h2><span class="en">Document Info</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:140px">项目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td><b>功能名称</b></td><td>标准文件（集团标准文件中心）</td></tr>
+          <tr><td><b>适用系统</b></td><td>UBK 供应商系统 / CSP 门店服务系统 / UOM 运营管理系统（三系统功能一致，文件内容按系统隔离）</td></tr>
+          <tr><td><b>本期范围</b></td><td>顶部菜单栏「操作指南」新增「标准文件」菜单入口 + 文件列表页（分类 / 预览 / 下载 / 搜索）+ 文件导入</td></tr>
+          <tr><td><b>目标用户</b></td><td>UBK 供应商端用户、CSP 门店端用户、UOM 集团内部运营员工</td></tr>
+          <tr><td><b>关联原型</b></td><td>ubk-supplier-system.html、csp-system.html、uom-system.html（菜单入口）、group-document-center.html?sys=xxx（文件列表页）、file-preview.html（在线预览）</td></tr>
+          <tr><td><b>术语</b></td><td>「标准文件」= 各系统顶部菜单入口统一名称；文件列表页标题统一为「{系统名}标准文件」</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4>修订记录</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>版本</th><th>日期</th><th>修订人</th><th>修订说明</th></tr></thead>
+        <tbody>
+          <tr><td class="center">V1.0</td><td class="center">2026-09-08</td><td class="center">产品部</td><td>首版（误含首页工作台、仅覆盖 UOM）</td></tr>
+          <tr><td class="center">V1.1</td><td class="center">2026-09-09</td><td class="center">产品部</td><td>剔除首页工作台；三系统整合描述；新增「文件数为 0 时入口不展示」规则</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2 背景 -->
+  <section id="s2">
+    <div class="section-header"><div class="num">2</div><h2>项目背景与产品定位</h2><span class="en">Background</span></div>
+    <p>集团的制度、规范、协议等标准文件在内部各系统中需要统一、可控地触达给对应角色。本期在 <b>UBK（供应商）、CSP（门店）、UOM（内部运营）</b> 三个内部系统的顶部菜单栏「操作指南」下，新增统一的「标准文件」菜单入口，点击进入各自系统的文件列表页。</p>
+    <div class="card-grid">
+      <div class="stat"><div class="k">覆盖系统</div><div class="v">3</div><div class="s">UBK / CSP / UOM</div></div>
+      <div class="stat"><div class="k">分类来源</div><div class="v">动态</div><div class="s">由导入文件夹名决定</div></div>
+      <div class="stat"><div class="k">单系统文件量</div><div class="v">~30</div><div class="s">按实际导入数量</div></div>
+    </div>
+    <h3>产品定位</h3>
+    <p><strong>「标准文件」是嵌入三个内部系统顶部菜单栏的统一文件入口</strong>，为各系统用户提供集团标准文件的分类检索、在线预览与下载能力。三系统<b>功能完全一致</b>，仅文件内容与页面标题按系统隔离。</p>
+    <div class="callout gray">本期仅新增「标准文件」菜单入口及文件列表页，<b>不涉及</b>三个系统原有的首页、工作台、业务模块等其他功能；已有功能保持现状。</div>
+  </section>
+
+  <!-- 3 需求范围 -->
+  <section id="s3">
+    <div class="section-header"><div class="num">3</div><h2>需求范围</h2><span class="en">Scope</span></div>
+    <p>本期范围如下，其余系统功能均不在本期交付范围内。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:180px">功能项</th><th style="width:90px">状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><b>菜单入口「标准文件」</b></td><td><span class="badge green">已实现</span></td><td>各系统顶部「操作指南」下拉新增「标准文件」入口；文件数为 0 时不展示</td></tr>
+          <tr><td><b>文件列表页</b></td><td><span class="badge green">已实现</span></td><td>分类 Tab（自动读取导入文件夹名）、文件卡片（编号 + 名称、分类标签、日期、大小）</td></tr>
+          <tr><td><b>在线预览</b></td><td><span class="badge green">已实现</span></td><td>独立预览页内嵌 PDF，支持兜底「新窗口打开」</td></tr>
+          <tr><td><b>下载</b></td><td><span class="badge green">已实现</span></td><td>直接下载原 PDF 文件</td></tr>
+          <tr><td><b>搜索</b></td><td><span class="badge green">已实现</span></td><td>按名称 / 部门模糊过滤</td></tr>
+          <tr><td><b>文件导入</b></td><td><span class="badge orange">待实现</span></td><td>初始化与更新均通过可复用导入脚本按文件夹批量导入，前端不提供上传</td></tr>
+          <tr><td style="color:#b91c1c"><b>首页 / 工作台 / 业务模块</b></td><td><span class="badge" style="background:#fee2e2;color:#b91c1c">不在范围</span></td><td>本期不包含，保持既有系统功能不变</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4 业务流程 -->
+  <section id="s4">
+    <div class="section-header"><div class="num">4</div><h2>业务流程</h2><span class="en">Process</span></div>
+
+    <h3>4.1 菜单入口展示规则（核心规则）</h3>
+    <div class="callout red"><b>入口展示判定：</b>只有该系统的文件已导入（文件数量 &gt; 0）时，顶部菜单栏「操作指南」下才展示「标准文件」入口；若该系统文件尚未导入（文件数量 = 0），则该入口<b>不展示</b>。</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>条件</th><th>菜单入口展示</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>文件数量 &gt; 0</td><td class="center"><b>展示</b></td><td>「操作指南」下拉显示「标准文件」入口，可点击进入列表页</td></tr>
+          <tr><td>文件数量 = 0</td><td class="center"><b>不展示</b></td><td>入口不展示，用户不可见、不可进入</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>4.2 进入文件列表页流程</h3>
+    <div class="flow">
+      <span class="step"><span class="n">1</span>登录系统</span><span class="arrow">→</span>
+      <span class="step"><span class="n">2</span>操作指南</span><span class="arrow">→</span>
+      <span class="step"><span class="n">3</span>标准文件</span><span class="arrow">→</span>
+      <span class="step"><span class="n">4</span>文件列表页</span>
+    </div>
+    <ul>
+      <li>入口位于顶部菜单栏「操作指南」下拉菜单（「集团制度」分组下，带 NEW 角标）。</li>
+      <li>点击后<b>新标签页</b>打开对应系统的文件列表页（<code>group-document-center.html?sys=ubk/csp/uom</code>）。</li>
+    </ul>
+
+    <h3>4.3 浏览 / 检索 / 预览 / 下载流程</h3>
+    <div class="flow">
+      <span class="step"><span class="n">1</span>进入列表页</span><span class="arrow">→</span>
+      <span class="step"><span class="n">2</span>分类 Tab / 搜索</span><span class="arrow">→</span>
+      <span class="step"><span class="n">3</span>预览 / 下载</span>
+    </div>
+    <ul>
+      <li>默认展示「全部」文件；分类 Tab 由导入文件夹名动态生成，切换 Tab 显示对应分类文件并实时展示数量。</li>
+      <li>搜索框按「文件名称 / 所属部门」模糊匹配，与分类 Tab 筛选可叠加。</li>
+      <li>「预览」新标签页打开在线预览；「下载」直接保存原 PDF。</li>
+    </ul>
+
+    <h3>4.4 文件初始化与更新流程（运维侧）</h3>
+    <div class="flow">
+      <span class="step"><span class="n">1</span>规划分类文件夹</span><span class="arrow">→</span>
+      <span class="step"><span class="n">2</span>运行导入脚本</span><span class="arrow">→</span>
+      <span class="step"><span class="n">3</span>生成编号/分类</span><span class="arrow">→</span>
+      <span class="step"><span class="n">4</span>入口展示/更新</span>
+    </div>
+    <ul>
+      <li><b>组织目录</b>：运维在源目录下按「分类」建子文件夹，文件夹名即分类名，PDF 放入对应文件夹。</li>
+      <li><b>运行脚本</b>：执行可复用导入脚本（含 --sys / --src / --mode 参数），导入后该系统「标准文件」入口展示。</li>
+      <li><b>更新</b>：后续新增、替换、下架均重新运行同一脚本；同编号文件覆盖，删除源文件即下架。</li>
+      <li><b>下架后数量归零</b>：若某系统文件被全部下架（数量归 0），其菜单入口随之不展示。</li>
+    </ul>
+
+    <h3>4.5 角色权限</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>角色</th><th>对应系统</th><th>菜单入口</th><th>文件列表</th></tr></thead>
+        <tbody>
+          <tr><td><b>供应商端用户</b></td><td><span class="badge ubk">UBK</span></td><td class="center">可见（有文件时）</td><td class="center">可预览、可下载</td></tr>
+          <tr><td><b>门店端用户</b></td><td><span class="badge csp">CSP</span></td><td class="center">可见（有文件时）</td><td class="center">可预览、可下载</td></tr>
+          <tr><td><b>内部运营员工</b></td><td><span class="badge uom">UOM</span></td><td class="center">可见（有文件时）</td><td class="center">可预览、可下载</td></tr>
+          <tr><td><b>运维 / 管理员</b></td><td>三系统</td><td class="center">可见</td><td class="center">可预览、可下载、可导入</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5 功能需求 -->
+  <section id="s5">
+    <div class="section-header"><div class="num">5</div><h2>功能需求</h2><span class="en">Functional Requirements</span></div>
+
+    <h3>5.1 顶部菜单入口「标准文件」</h3>
+    <p><strong>功能概述</strong>：在三个系统顶部菜单栏「操作指南」下拉菜单中新增统一的「标准文件」入口，进入对应系统的文件列表页。</p>
+    <ul>
+      <li>入口名称：统一为「标准文件」（带 NEW 角标），位于「集团制度」分组下。</li>
+      <li>入口是否展示由该系统文件数量决定（见 5.3）。</li>
+      <li>点击后新标签页打开 <code>group-document-center.html?sys={系统标识}</code>。</li>
+    </ul>
+
+    <h3>5.2 文件列表页</h3>
+    <p><strong>功能概述</strong>：展示该系统已导入的标准文件，支持分类筛选、搜索、预览与下载。页面标题统一为「{系统名}标准文件」。</p>
+
+    <h4>5.2.1 分类 Tab 页签</h4>
+    <p><strong>功能概述</strong>：分类不预先硬编码，而是<b>自动读取导入文件夹名称</b>动态生成。</p>
+    <ul>
+      <li>运维在源目录下按<b>分类建子文件夹</b>，每个子文件夹名即一个分类（如「制度与规范」「财务结算」「服务与安全」）。</li>
+      <li>系统自动读取文件夹名，生成「全部」+ 各分类 Tab，每个 Tab 右侧以角标展示该分类文件数量。</li>
+      <li>分类数量由实际导入的文件夹数决定，非固定值；新增 / 删除文件夹即新增 / 移除对应 Tab。</li>
+    </ul>
+
+    <h4>5.2.2 文件卡片</h4>
+    <p><strong>展示字段</strong>（4 列网格，响应式收缩至 3~2 列）：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:120px">字段</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><b>文件名称</b></td><td>「文件编号 + 文件名」合并为一个字段，编号在前，二者同字号、同色、加粗</td></tr>
+          <tr><td><b>文件编号</b></td><td>企业标准编号，格式 <code>Q/UTOUR A123BC 2026</code></td></tr>
+          <tr><td><b>分类标签</b></td><td>彩色标签，标识文件所属分类（= 对应文件夹名）</td></tr>
+          <tr><td><b>发布日期 / 文件大小</b></td><td>发布（更新）日期；大小如「18.0 KB」</td></tr>
+          <tr><td><b>操作</b></td><td>「预览」与「下载」两个按钮</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>5.2.3 文件编号规则</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:140px">组成部分</th><th>取值说明</th></tr></thead>
+        <tbody>
+          <tr><td>前缀</td><td><code>Q/UTOUR</code>（企业标准代号，固定）</td></tr>
+          <tr><td>序列首字母</td><td>1 位大写字母（A-Z，排除易混淆字符）</td></tr>
+          <tr><td>顺序号</td><td>3 位数字（100–899）</td></tr>
+          <tr><td>校验字母</td><td>2 位大写字母</td></tr>
+          <tr><td>年份</td><td>发布年份（如 2026）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>示例：<b>Q/UTOUR J489JR 2026</b>，系统内唯一。</p>
+
+    <h4>5.2.4 在线预览</h4>
+    <p>点击「预览」新标签页打开独立预览页（file-preview.html），内嵌 PDF 查看，含返回、文件信息与下载；不支持内嵌时提供「在新窗口打开」兜底。</p>
+
+    <h4>5.2.5 下载</h4>
+    <p>点击「下载」直接下载原 PDF 文件，文件名与展示名一致。</p>
+
+    <h4>5.2.6 搜索</h4>
+    <p>顶部搜索框按「文件名称 / 所属部门」模糊匹配，实时过滤，可与分类 Tab 叠加。</p>
+
+    <h3>5.3 菜单入口展示规则</h3>
+    <p><strong>功能概述</strong>：菜单入口的可见性由该系统文件数量动态决定。</p>
+    <ul>
+      <li>后端按 <code>sys_code</code> 统计该系统文件数量并下发。</li>
+      <li><b>数量 &gt; 0</b>：展示「标准文件」入口。</li>
+      <li><b>数量 = 0</b>：不展示入口，用户不可见。</li>
+    </ul>
+    <p><strong>前置条件</strong>：运维已按系统完成文件导入（见 5.4），否则入口不展示。</p>
+
+    <h3>5.4 文件导入与更新（运维侧）</h3>
+    <p><strong>功能概述</strong>：文件列表页不提供前端上传功能，文件初始化与更新均由运维 / 管理员通过<b>可复用导入脚本</b>完成。</p>
+    <ul>
+      <li>提供可复用导入脚本，参数含目标系统 <code>--sys</code>、源文件夹 <code>--src</code>、模式 <code>--mode</code>（init 全量 / incre 增量）。</li>
+      <li><b>脚本可复用</b>：后续每次调整（新增、替换、下架）重新运行同一脚本即可，无需二次开发。</li>
+      <li>脚本遍历源目录下的「分类子文件夹」，文件夹名写入分类字段，PDF 写入 file_document；同名 / 同编号匹配覆盖，源文件删除即下架。</li>
+      <li>可重复执行：脚本可被多次运行，已存在的文件会被识别并跳过或覆盖，不会产生重复记录。</li>
+    </ul>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:120px">项目</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>导入方式</td><td>可复用脚本批量导入（.pdf 文件 + 分类文件夹结构）</td></tr>
+          <tr><td>脚本参数</td><td>--sys（目标系统）/ --src（源文件夹）/ --mode（init / incre）</td></tr>
+          <tr><td>分类来源</td><td>导入文件夹名（子文件夹名 = 分类名）</td></tr>
+          <tr><td>更新规则</td><td>新增 / 覆盖 / 下架，按文件编号或文件名匹配</td></tr>
+          <tr><td>编号生成</td><td>导入时按编号规则自动分配，系统内唯一</td></tr>
+          <tr><td>导入权限</td><td>仅运维 / 管理员，普通用户只读</td></tr>
+          <tr><td>联动效果</td><td>导入后入口展示；数量归 0 后入口不展示</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>5.5 功能交互与异常处理</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>场景</th><th>交互 / 处理</th></tr></thead>
+        <tbody>
+          <tr><td>文件数为 0</td><td>菜单入口不展示；直接访问列表页应显示空状态或跳转回登录页（待确认）</td></tr>
+          <tr><td>分类筛选无结果</td><td>展示空状态占位，提示「暂无文件」</td></tr>
+          <tr><td>搜索无结果</td><td>展示空状态占位</td></tr>
+          <tr><td>文件丢失 / 404</td><td>预览页提示无法加载，引导「在新窗口打开」或「下载」兜底</td></tr>
+          <tr><td>跨系统访问</td><td>列表页按 <code>sys</code> 参数只展示对应系统文件，不展示其他系统内容</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6 非功能需求 -->
+  <section id="s6">
+    <div class="section-header"><div class="num">6</div><h2>非功能需求</h2><span class="en">Non-functional</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:130px">维度</th><th>要求</th></tr></thead>
+        <tbody>
+          <tr><td><b>性能</b></td><td>文件列表首屏渲染 ≤ 2s；入口展示判定（按系统查询文件数量）≤ 200ms</td></tr>
+          <tr><td><b>兼容性</b></td><td>Chrome / Edge / Safari 最新两个大版本；1280px 以上分辨率，960px 时栅格收缩（4→3→2 列）</td></tr>
+          <tr><td><b>安全</b></td><td>文件仅对所属系统角色可见；下载 / 预览接入统一登录校验；敏感文件访问留痕</td></tr>
+          <tr><td><b>可用性</b></td><td>入口不展示逻辑对用户无感，不展示空列表页；关键操作即时反馈</td></tr>
+          <tr><td><b>可维护性</b></td><td>分类由导入文件夹名决定，无需改前端即可增删分类；编号规则、系统枚举配置化</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 7 数据需求 -->
+  <section id="s7">
+    <div class="section-header"><div class="num">7</div><h2>数据需求</h2><span class="en">Data Model</span></div>
+
+    <h3>7.1 集团标准文件表（file_document）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:160px">字段</th><th style="width:130px">类型</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>file_id</td><td>bigint</td><td>主键，自增</td></tr>
+          <tr><td>file_code</td><td>varchar(32)</td><td>文件编号，如 Q/UTOUR J489JR 2026，系统内唯一</td></tr>
+          <tr><td>file_name</td><td>varchar(128)</td><td>文件名称</td></tr>
+          <tr><td>category</td><td>varchar(32)</td><td>分类（= 导入文件夹名），如 制度与规范 / 财务结算 / 服务与安全</td></tr>
+          <tr><td>dept</td><td>varchar(64)</td><td>归属部门</td></tr>
+          <tr><td>file_url</td><td>varchar(256)</td><td>PDF 存储路径</td></tr>
+          <tr><td>file_size</td><td>varchar(16)</td><td>文件大小（KB）</td></tr>
+          <tr><td>publish_date</td><td>date</td><td>发布日期</td></tr>
+          <tr><td>sys_code</td><td>varchar(16)</td><td>所属系统：ubk / csp / uom</td></tr>
+          <tr><td>created_at / updated_at</td><td>datetime</td><td>创建 / 更新时间</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout blue">文件数据来源：file_document 不对普通用户开放写入，所有文件按 <code>sys_code</code> 批量导入初始化与更新（详见 5.4）。</div>
+
+    <h3>7.2 枚举值定义</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:180px">枚举字段</th><th>取值</th></tr></thead>
+        <tbody>
+          <tr><td>sys_code</td><td><code>ubk</code> / <code>csp</code> / <code>uom</code></td></tr>
+          <tr><td>category</td><td>由导入文件夹名动态决定，无固定枚举（示例：制度与规范 / 财务结算 / 服务与安全）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>7.3 菜单入口展示判定逻辑</h3>
+    <div class="card">
+      <p>系统页面加载菜单时，后端执行按系统统计：<br><code>COUNT(file_document WHERE sys_code = '{当前系统}')</code></p>
+      <p>若结果 <b>&gt; 0</b>，则渲染「标准文件」入口；若结果 <b>= 0</b>，则不渲染该入口。</p>
+    </div>
+    <div class="callout green">该判定逻辑同时适用于 UBK、CSP、UOM 三套系统，确保「未导入文件则入口不展示」的规则全局一致。</div>
+  </section>
+
+  <div class="callout gray" style="margin-top:32px">本文档为 V1.1 草稿，聚焦「标准文件」菜单入口与文件列表页；文件导入后端实现、直接访问空列表页的跳转策略等细节待研发、业务评审确认。</div>
+
+</div>
+</body>
+</html>
