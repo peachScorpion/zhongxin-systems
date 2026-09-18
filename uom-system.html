@@ -129,8 +129,32 @@
   .side-item.active { background: var(--sidebar-active); color: #fff; font-weight: 500; box-shadow: inset 3px 0 0 var(--brand); }
   .side-item.active svg { color: var(--brand); }
   .side-item .arrow { margin-left: auto; opacity: .55; transition: .2s; }
+  .side-item.expanded .arrow { transform: rotate(90deg); }
+  .side-item.expanded { background: var(--sidebar-active); color: #fff; }
+  .side-flyout {
+    position: fixed; z-index: 1200; min-width: 380px;
+    background: #26282e; border: 1px solid #35383f; border-radius: 12px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.4); padding: 14px 16px 18px;
+    opacity: 0; visibility: hidden; transform: translateX(-8px); transition: .16s ease;
+    pointer-events: none;
+  }
+  .side-flyout.show { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+  .fly-seg-title {
+    display: flex; align-items: center; gap: 8px; color: #fff;
+    font-size: 13px; font-weight: 600; margin: 4px 0 10px;
+  }
+  .fly-seg-title .fly-bar { width: 3px; height: 14px; border-radius: 2px; background: var(--brand); }
+  .fly-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px; }
+  .fly-item {
+    padding: 9px 6px; border-radius: 7px; color: #d4d7df; font-size: 13px;
+    text-align: center; white-space: nowrap; transition: .12s;
+  }
+  .fly-item:hover { background: var(--brand); color: #fff; }
+  .fly-item:hover svg { color: #fff; }
 
   .content { flex: 1; overflow-y: auto; padding: 20px; min-width: 0; }
+  #embedFrame { width: 100%; height: calc(100vh - 100px); border: 0; border-radius: 10px; background: #fff; display: none; box-shadow: var(--shadow-sm); }
+  #dashHome { min-width: 0; }
   .grid { display: grid; grid-template-columns: minmax(0, 1fr) 284px; gap: 20px; align-items: start; }
   .main-col { display: flex; flex-direction: column; gap: 20px; }
   .card { background: #fff; border-radius: 14px; box-shadow: var(--shadow-sm); border: 1px solid #f0f1f5; }
@@ -268,15 +292,42 @@
 
   <div class="body">
     <aside class="sidebar">
-      <button class="side-item active">
+      <button class="side-item active" data-action="home">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
         首页
       </button>
-      <button class="side-item">
+      <div class="side-group" id="group-prod">
+      <button class="side-item expandable" id="prodItem">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/></svg>
         产品管理
         <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
       </button>
+      <div class="side-flyout" id="flyout-prod">
+        <div class="fly-seg-title"><span class="fly-bar"></span>外采旅游产品</div>
+        <div class="fly-grid">
+          <a class="fly-item" href="#">产品中心</a>
+          <a class="fly-item" href="#" data-url="./index.html#/admin/product/list?embed=1">产品管理</a>
+          <a class="fly-item" href="#">产品运营</a>
+        </div>
+        <div class="fly-seg-title"><span class="fly-bar"></span>自研旅游产品</div>
+        <div class="fly-grid">
+          <a class="fly-item" href="#">自研产品</a>
+          <a class="fly-item" href="#">众信制造团控</a>
+          <a class="fly-item" href="#">自研团控</a>
+        </div>
+        <div class="fly-seg-title"><span class="fly-bar"></span>保险产品</div>
+        <div class="fly-grid">
+          <a class="fly-item" href="#">保险公司管理</a>
+          <a class="fly-item" href="#">保险产品管理</a>
+        </div>
+        <div class="fly-seg-title"><span class="fly-bar"></span>酒店产品</div>
+        <div class="fly-grid">
+          <a class="fly-item" href="#">酒店基础管理</a>
+          <a class="fly-item" href="#">酒店信息管理</a>
+          <a class="fly-item" href="#">供应商酒店管理</a>
+        </div>
+      </div>
+    </div>
       <button class="side-item">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18H6z"/><path d="M6 7h12M6 11h12M6 15h8"/></svg>
         销售管理
@@ -307,11 +358,25 @@
         市场管理
         <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
       </button>
-      <button class="side-item">
+      <div class="side-group" id="group-ops">
+      <button class="side-item expandable" id="opsItem">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V5a1 1 0 0 1 1-1h9l2 2v15"/><path d="M4 21h16M8 9h5"/></svg>
         运营管理
         <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
       </button>
+      <div class="side-flyout" id="flyout-ops">
+        <div class="fly-seg-title"><span class="fly-bar"></span>平台运营</div>
+        <div class="fly-grid">
+          <a class="fly-item" href="#" data-url="./index.html#/admin?embed=1">C端首页配置</a>
+          <a class="fly-item" href="#" data-url="./index.html#/admin/news?embed=1">众信动态配置</a>
+          <a class="fly-item" href="group-document-center.html?sys=uom" target="_blank">标准文件</a>
+        </div>
+        <div class="fly-seg-title"><span class="fly-bar"></span>营销活动</div>
+        <div class="fly-grid">
+          <a class="fly-item" href="#" data-url="./index.html#/admin/topic-activity?embed=1">C端专题活动</a>
+        </div>
+      </div>
+    </div>
       <button class="side-item">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M8 15h4"/></svg>
         财务管理
@@ -349,6 +414,8 @@
     </aside>
 
     <main class="content">
+      <iframe id="embedFrame" src="about:blank" title="功能页面"></iframe>
+      <div id="dashHome">
       <div class="hero">
         <div class="hero-emoji">👋</div>
         <div>
@@ -454,6 +521,7 @@
           </div>
         </div>
       </div>
+      </div>
     </main>
   </div>
 </div>
@@ -470,6 +538,94 @@
     dropdown.classList.remove("open");
     window.open("group-document-center.html?sys=uom", "_blank", "noopener");
   });
+
+  // 运营管理：悬浮弹出一级菜单
+  const opsBtn = document.getElementById("opsItem");
+  const flyOut = document.getElementById("flyout-ops");
+  let flyHideTimer = null;
+  function posFlyout() {
+    const r = opsBtn.getBoundingClientRect();
+    flyOut.style.left = (r.right + 8) + "px";
+    flyOut.style.top = r.top < 8 ? 8 + "px" : r.top + "px";
+  }
+  function showFly() { clearTimeout(flyHideTimer); posFlyout(); flyOut.classList.add("show"); }
+  function hideFly() { flyOut.classList.remove("show"); }
+  function scheduleFlyHide() { clearTimeout(flyHideTimer); flyHideTimer = setTimeout(hideFly, 200); }
+  opsBtn.addEventListener("mouseenter", showFly);
+  opsBtn.addEventListener("mouseleave", scheduleFlyHide);
+  flyOut.addEventListener("mouseenter", () => clearTimeout(flyHideTimer));
+  flyOut.addEventListener("mouseleave", hideFly);
+
+  // === 功能页 iframe 嵌入 + URL hash 路由同步 ===
+  const embedFrame = document.getElementById("embedFrame");
+  const dashHome = document.getElementById("dashHome");
+  function routeOf(url) {
+    const i = url.indexOf("#");
+    return i >= 0 ? url.substring(i + 1) : "";
+  }
+  function findItemByRoute(route) {
+    return [...document.querySelectorAll(".fly-item[data-url]")].find(a => a.getAttribute("data-url").includes("#" + route)) || null;
+  }
+  function loadEmbed(url) {
+    if (!embedFrame) return;
+    embedFrame.style.display = "block";
+    dashHome.style.display = "none";
+    embedFrame.src = url;
+    document.querySelectorAll(".side-item").forEach(b => b.classList.remove("active"));
+    // 把子页面路由同步到地址栏 hash，实现刷新/后退可恢复
+    const route = routeOf(url);
+    if (("" + location.hash).replace(/^#/, "") !== route) location.hash = route;
+  }
+  function showHome() {
+    if (!embedFrame) return;
+    embedFrame.style.display = "none";
+    embedFrame.src = "about:blank";
+    dashHome.style.display = "";
+    document.querySelectorAll(".side-item").forEach(b => b.classList.remove("active"));
+    const home = document.querySelector('.side-item[data-action="home"]');
+    if (home) home.classList.add("active");
+    // 回到首页时清空地址栏 hash
+    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  }
+  // 点击带 data-url 的 fly-item → 在 iframe 加载，地址栏同步
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest(".fly-item[data-url]");
+    if (t) { e.preventDefault(); loadEmbed(t.getAttribute("data-url")); return; }
+    const home = e.target.closest('[data-action="home"]');
+    if (home) { showHome(); }
+  });
+  // 支持浏览器前进/后退 / 手动改地址栏
+  window.addEventListener("hashchange", () => {
+    const route = (location.hash || "").replace(/^#/, "");
+    if (!route) { showHome(); return; }
+    const el = findItemByRoute(route);
+    if (el) loadEmbed(el.getAttribute("data-url"));
+  });
+  // 刷新后根据当前 hash 恢复对应子页面
+  (function restore() {
+    const route = (location.hash || "").replace(/^#/, "");
+    if (route) {
+      const el = findItemByRoute(route);
+      if (el) loadEmbed(el.getAttribute("data-url"));
+    }
+  })();
+
+  // 产品管理：悬浮弹出二级菜单（与运营管理同款交互）
+  const prodBtn = document.getElementById("prodItem");
+  const prodFly = document.getElementById("flyout-prod");
+  let prodHideTimer = null;
+  function posFlyoutProd() {
+    const r = prodBtn.getBoundingClientRect();
+    prodFly.style.left = (r.right + 8) + "px";
+    prodFly.style.top = r.top < 8 ? 8 + "px" : r.top + "px";
+  }
+  function showProdFly() { clearTimeout(prodHideTimer); posFlyoutProd(); prodFly.classList.add("show"); prodBtn.classList.add("expanded"); }
+  function hideProdFly() { prodFly.classList.remove("show"); prodBtn.classList.remove("expanded"); }
+  function scheduleProdHide() { clearTimeout(prodHideTimer); prodHideTimer = setTimeout(hideProdFly, 200); }
+  prodBtn.addEventListener("mouseenter", showProdFly);
+  prodBtn.addEventListener("mouseleave", scheduleProdHide);
+  prodFly.addEventListener("mouseenter", () => clearTimeout(prodHideTimer));
+  prodFly.addEventListener("mouseleave", hideProdFly);
 </script>
 </body>
 </html>
