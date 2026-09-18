@@ -155,6 +155,16 @@
   .content { flex: 1; overflow-y: auto; padding: 20px; min-width: 0; }
   #embedFrame { width: 100%; height: calc(100vh - 100px); border: 0; border-radius: 10px; background: #fff; display: none; box-shadow: var(--shadow-sm); }
   #dashHome { min-width: 0; }
+  /* 系统导览 */
+  .sys-tour { margin-bottom: 18px; }
+  .sys-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .sys-card { display: flex; flex-direction: column; gap: 8px; padding: 18px 16px; background: #fff; border: 1px solid #eceef5; border-radius: 14px; cursor: pointer; transition: .22s ease; text-decoration: none; color: inherit; }
+  .sys-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(233,30,99,.10); border-color: #f5c6d8; }
+  .sys-card .sys-ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(15,23,42,.12); }
+  .sys-card .sys-name { font-size: 15px; font-weight: 600; color: var(--ink-1, #1f2233); }
+  .sys-card .sys-desc { font-size: 12px; color: var(--muted, #8a8fa3); line-height: 1.5; }
+  .sys-card .sys-in { margin-top: 2px; font-size: 12px; color: #e91e63; font-weight: 500; }
+  @media (max-width: 1100px) { .sys-grid { grid-template-columns: repeat(2, 1fr); } }
   .grid { display: grid; grid-template-columns: minmax(0, 1fr) 284px; gap: 20px; align-items: start; }
   .main-col { display: flex; flex-direction: column; gap: 20px; }
   .card { background: #fff; border-radius: 14px; box-shadow: var(--shadow-sm); border: 1px solid #f0f1f5; }
@@ -421,6 +431,39 @@
         <div>
           <b>欢迎您，总部公司-众信优游总部，唐美芳 ~</b>
           <div class="sub">今日运营大盘 <em>实时数据</em> 已更新</div>
+        </div>
+      </div>
+
+      <!-- 系统导览 -->
+      <div class="sys-tour">
+        <div class="card card-pad">
+          <div class="section-title"><span class="dot"></span>系统导览 <span style="font-weight:400;font-size:12px;color:var(--muted,#8a8fa3);margin-left:10px">选择系统进入对应管理台</span></div>
+          <div class="sys-grid">
+            <div class="sys-card" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+              <div class="sys-ic" style="background:linear-gradient(135deg,#ff8a65,#e91e63)"><svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div>
+              <div class="sys-name">UOM 运营管理系统</div>
+              <div class="sys-desc">统一后台 · 产品 / 订单 / 运营管理</div>
+              <div class="sys-in">当前系统 ›</div>
+            </div>
+            <a class="sys-card" href="./csp-system.html">
+              <div class="sys-ic" style="background:linear-gradient(135deg,#64b5f6,#3b82f6)"><svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h2l1.5 2.5H21a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2z"/><path d="M7 11h10M7 15h6"/></svg></div>
+              <div class="sys-name">CSP 渠道商系统</div>
+              <div class="sys-desc">渠道商门户 · 分销 / 权益管理</div>
+              <div class="sys-in">进入系统 ›</div>
+            </a>
+            <a class="sys-card" href="./ubk-supplier-system.html">
+              <div class="sys-ic" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg></div>
+              <div class="sys-name">UBK 供应商系统</div>
+              <div class="sys-desc">供应商门户 · 合同 / 结算管理</div>
+              <div class="sys-in">进入系统 ›</div>
+            </a>
+            <a class="sys-card" href="./group-document-center.html">
+              <div class="sys-ic" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/><path d="M9 9v11"/></svg></div>
+              <div class="sys-name">集团文件中心</div>
+              <div class="sys-desc">集团文档 · 制度 / 规范中心</div>
+              <div class="sys-in">进入系统 ›</div>
+            </a>
+          </div>
         </div>
       </div>
 
