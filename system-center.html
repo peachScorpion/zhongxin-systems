@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>系统中心 · 众信旅游</title>
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --brand: #e91e63;
+    --brand-2: #ff8a65;
+    --ink-1: #1f2233;
+    --ink-2: #4a4e63;
+    --muted: #8a8fa3;
+    --line: #eceef5;
+    --shadow-sm: 0 2px 10px rgba(15,23,42,.05);
+    --shadow-lg: 0 14px 34px rgba(15,23,42,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background:
+      radial-gradient(1200px 520px at 12% -8%, rgba(233,30,99,.10), transparent 60%),
+      radial-gradient(1100px 480px at 88% -6%, rgba(59,130,246,.10), transparent 60%),
+      var(--bg);
+    color: var(--ink-1);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 24px 72px; }
+
+  /* header */
+  .hd { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 34px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .logo { width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(233,30,99,.28); }
+  .brand b { font-size: 20px; letter-spacing: .5px; }
+  .brand span { font-size: 12px; color: var(--muted); }
+  .hd .tag { font-size: 13px; color: var(--brand); background: #fff; border: 1px solid #f5c6d8; border-radius: 999px; padding: 6px 14px; font-weight: 500; }
+
+  .hero { margin-bottom: 34px; }
+  .hero h1 { font-size: 30px; font-weight: 700; letter-spacing: .5px; }
+  .hero h1 em { font-style: normal; background: linear-gradient(90deg, var(--brand), #ff8a65); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { margin-top: 8px; color: var(--ink-2); font-size: 14px; }
+
+  /* group */
+  .grp { margin-bottom: 34px; }
+  .grp-title { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .grp-title .bar { width: 4px; height: 16px; border-radius: 3px; background: linear-gradient(180deg, var(--brand), var(--brand-2)); }
+  .grp-title b { font-size: 16px; color: var(--ink-1); }
+  .grp-title span { font-size: 12px; color: var(--muted); }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: .24s ease;
+    overflow: hidden;
+  }
+  .card::after { content: ""; position: absolute; right: -30px; top: -30px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, rgba(233,30,99,.08), transparent 70%); }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: #f2c4d6; }
+  .ic { width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 18px rgba(15,23,42,.14); }
+  .ic svg { width: 23px; height: 23px; }
+  .name { font-size: 16px; font-weight: 600; }
+  .desc { font-size: 12.5px; color: var(--muted); line-height: 1.55; min-height: 38px; }
+  .go { margin-top: 2px; font-size: 12.5px; color: var(--brand); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .flag { position: absolute; right: 14px; top: 14px; font-size: 11px; color: #fff; background: var(--brand); border-radius: 999px; padding: 2px 9px; font-weight: 500; }
+
+  @media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .wrap { padding: 28px 16px 48px; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hd">
+      <div class="brand">
+        <div class="logo">众</div>
+        <div><b>众信旅游 · 系统中心</b><br><span>集团各业务系统统一入口</span></div>
+      </div>
+      <div class="tag">全部系统</div>
+    </div>
+
+    <div class="hero">
+      <h1>欢迎进入 <em>众信旅游</em> 系统中心</h1>
+      <p>请选择目标系统进入，各系统独立运维，可从本页一键直达。</p>
+    </div>
+
+    <!-- 核心业务系统 -->
+    <div class="grp">
+      <div class="grp-title"><span class="bar"></span><b>核心业务系统</b><span>运营 / 渠道 / 供应商 后台</span></div>
+      <div class="grid">
+        <a class="card" href="./uom-system.html">
+          <span class="flag">主系统</span>
+          <div class="ic" style="background:linear-gradient(135deg,#ff8a65,#e91e63)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div>
+          <div class="name">UOM 运营管理系统</div>
+          <div class="desc">统一运营后台 · 产品 / 订单 / 运营 / 会员管理</div>
+          <div class="go">进入系统 →</div>
+        </a>
+        <a class="card" href="./csp-system.html">
+          <div class="ic" style="background:linear-gradient(135deg,#64b5f6,#3b82f6)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h2l1.5 2.5H21a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2z"/><path d="M7 11h10M7 15h6"/></svg></div>
+          <div class="name">CSP 门店服务系统</div>
+          <div class="desc">渠道 / 门店服务 · 分销、权益与门店管理</div>
+          <div class="go">进入系统 →</div>
+        </a>
+        <a class="card" href="./ubk-supplier-system.html">
+          <div class="ic" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg></div>
+          <div class="name">UBK 供应商系统</div>
+          <div class="desc">供应商管理 · 合同 / 结算 / 服务质量考核</div>
+          <div class="go">进入系统 →</div>
+        </a>
+        <a class="card" href="./group-document-center.html">
+          <div class="ic" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/><path d="M9 9v11"/></svg></div>
+          <div class="name">集团文件中心</div>
+          <div class="desc">集团标准文件 · 制度 / 规范 / 协议中心</div>
+          <div class="go">进入系统 →</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 对外官网 -->
+    <div class="grp">
+      <div class="grp-title"><span class="bar"></span><b>对外官网</b><span>面向 C 端用户</span></div>
+      <div class="grid">
+        <a class="card" href="./index.html">
+          <div class="ic" style="background:linear-gradient(135deg,#22c55e,#059669)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h4l2-6 3 12 2-8 1 2h6"/></svg></div>
+          <div class="name">悠哉官网</div>
+          <div class="desc">众信旅游 C 端官网 · 线路、产品与主题内容</div>
+          <div class="go">进入官网 →</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 小程序端 -->
+    <div class="grp">
+      <div class="grp-title"><span class="bar"></span><b>小程序端</b><span>管理台位于签证业务系统</span></div>
+      <div class="grid">
+        <a class="card" href="https://peachscorpion.github.io/visaops/">
+          <div class="ic" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg></div>
+          <div class="name">有米小程序</div>
+          <div class="desc">有米 C 端小程序 · 业务与内容管理入口</div>
+          <div class="go">进入管理台 →</div>
+        </a>
+        <a class="card" href="https://peachscorpion.github.io/visaops/">
+          <div class="ic" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg></div>
+          <div class="name">悠哉小程序</div>
+          <div class="desc">悠哉 C 端小程序 · 业务与内容管理入口</div>
+          <div class="go">进入管理台 →</div>
+        </a>
+        <a class="card" href="https://peachscorpion.github.io/visaops/">
+          <div class="ic" style="background:linear-gradient(135deg,#64748b,#475569)"><svg fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5h18L12 12 3 5z"/><path d="M12 12v9"/><path d="M3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5"/></svg></div>
+          <div class="name">签证业务系统 VisaOps</div>
+          <div class="desc">签证业务控制台 · 有米 / 悠哉模块管理</div>
+          <div class="go">进入系统 →</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
